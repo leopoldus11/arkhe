@@ -1,0 +1,493 @@
+<title>ARKHÈ</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Spectral:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap">
+<style>
+/* Layout: one long descent through a single day over the Alpujarra.
+   Day (Village) → threshold of leaves → dusk → starry night (Beyond) → masks → dawn (the vessel) → back in the Village.
+   Single committed look: each band carries its own light, so no light/dark theme switch. */
+:root {
+  --leaf: #cdd86c;      /* mulberry leaves with light through them */
+  --olive: #66702f;     /* olive groves */
+  --ochre: #b98b55;     /* dry slopes, terraces */
+  --slate: #5a6068;     /* slate paths */
+  --horizon: #8aa3cf;   /* layered ridges toward the sea */
+  --blue: #4a7ae5;      /* the far horizon */
+  --indigo: #0f1128;    /* the Beyond */
+  --dawn: #eab9a6;      /* the return */
+  --vine: #b3262f;      /* one drop of fire */
+  --bone: #f1eee2;      /* text on dark */
+  --ink: #1c1f15;       /* text on light */
+  --font-display: "Marcellus", "Trajan Pro", "Times New Roman", serif;
+  --font-body: "Spectral", Georgia, "Times New Roman", serif;
+  --font-ui: "Jost", "Helvetica Neue", Arial, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { background: var(--indigo); color: var(--ink); font-family: var(--font-body); font-size: 18px; line-height: 1.65; overflow-x: hidden; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation: none !important; transition: none !important; } }
+
+/* grain over everything: nothing here is meant to look finished */
+.grain { position: fixed; inset: 0; pointer-events: none; z-index: 50; opacity: .14; mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .55 0'/></filter><rect width='180' height='180' filter='url(%23n)'/></svg>"); }
+
+.band { position: relative; overflow: hidden; }
+.inner { position: relative; z-index: 2; max-width: 1080px; margin: 0 auto;
+  padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
+.wash { position: absolute; inset: -10%; z-index: 0; transition: background 6s ease; }
+.prose { max-width: 34em; }
+.prose p { margin: 0 0 1.1em; }
+.label { font-family: var(--font-ui); font-size: 12px; letter-spacing: .22em; text-transform: uppercase; font-weight: 500; margin: 0 0 18px; }
+h1, h2 { font-family: var(--font-display); font-weight: 400; text-wrap: balance; margin: 0; }
+h2 { font-size: clamp(32px, 5.2vw, 58px); line-height: 1.08; margin-bottom: 28px; }
+em { font-style: italic; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; border-radius: 2px; }
+svg.hand { display: block; overflow: visible; }
+
+/* prototype note */
+.proto { position: absolute; z-index: 5; top: 14px; right: max(16px, env(safe-area-inset-right, 0px));
+  font-family: var(--font-ui); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink);
+  border: 1px solid rgba(28,31,21,.35); padding: 6px 10px; border-radius: 2px; background: rgba(241,238,226,.45); }
+
+/* ---------- 1 · Village (day) ---------- */
+#village { color: var(--ink); padding-block: 96px 120px; }
+#village .wash { background: radial-gradient(60% 50% at 20% 20%, var(--leaf), transparent 70%), radial-gradient(70% 60% at 85% 30%, #e7e9b8, transparent 70%), radial-gradient(80% 70% at 50% 100%, var(--horizon), transparent 75%), #dfe4b9; }
+.mark { font-family: var(--font-display); font-size: clamp(76px, 17vw, 210px); line-height: .9; letter-spacing: .06em; margin: 26px 0 30px -4px; color: var(--ink); }
+.mark span { color: var(--olive); }
+.etym { font-family: var(--font-ui); font-size: 14px; letter-spacing: .08em; color: rgba(28,31,21,.75); margin-bottom: 46px; }
+.etym b { font-weight: 500; color: var(--ink); }
+.whisper { font-family: var(--font-body); font-style: italic; font-weight: 300; font-size: clamp(24px, 3.4vw, 36px); line-height: 1.3; max-width: 22em; margin: 0 0 48px; text-wrap: balance; }
+.facts { display: flex; flex-wrap: wrap; gap: 10px 34px; font-family: var(--font-ui); font-size: 14px; letter-spacing: .06em; margin-top: 46px; }
+.facts span { display: flex; gap: 8px; align-items: baseline; }
+.facts b { font-weight: 500; }
+.ridges { position: absolute; left: 0; right: 0; bottom: 0; z-index: 1; height: 42%; }
+
+/* ---------- 2 · Threshold ---------- */
+#threshold { color: var(--bone); min-height: 680px; padding-block: 90px; display: flex; align-items: center; }
+#threshold .wash { background: linear-gradient(180deg, #9db0d6 0%, #8a9fc8 40%, #6c7fa8 100%); }
+#leafCanvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; }
+.thresh-box { position: relative; z-index: 3; text-align: center; margin: 0 auto; max-width: 30em; padding: 34px 26px; border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(40,48,86,.62), rgba(40,48,86,.35) 65%, transparent); }
+.thresh-box h2 { color: var(--bone); text-shadow: 0 2px 30px rgba(15,17,40,.55); }
+.thresh-box p { text-shadow: 0 1px 18px rgba(15,17,40,.7); }
+.breath { width: 150px; height: 150px; margin: 28px auto 22px; border-radius: 50%; display: grid; place-items: center;
+  background: radial-gradient(circle at 40% 35%, rgba(241,238,226,.55), rgba(241,238,226,.08) 70%);
+  border: 1px solid rgba(241,238,226,.6); transition: transform 4s ease-in-out; font-family: var(--font-ui); font-size: 13px; letter-spacing: .18em; text-transform: uppercase; }
+.btn { font-family: var(--font-ui); font-size: 14px; letter-spacing: .16em; text-transform: uppercase; padding: 14px 26px; border-radius: 40px;
+  border: 1px solid currentColor; background: transparent; color: inherit; cursor: pointer; transition: background .3s, color .3s; }
+.btn:hover { background: var(--bone); color: var(--indigo); }
+.letgo { display: none; margin-top: 18px; }
+.letgo.on { display: block; }
+.letgo label { display: block; font-style: italic; margin-bottom: 10px; }
+.letgo input { width: min(100%, 320px); font: inherit; font-size: 20px; text-align: center; padding: 10px 14px; color: var(--bone);
+  background: rgba(15,17,40,.25); border: 0; border-bottom: 1px solid var(--bone); outline-offset: 6px; }
+.dissolve { display: inline-block; position: relative; height: 40px; margin-top: 14px; font-size: 22px; }
+.dissolve span { display: inline-block; transition: transform 3.5s ease-out, opacity 3.5s ease-out, filter 3.5s; }
+.crossed { display: none; margin-top: 20px; }
+.crossed.on { display: block; }
+.skip { display: inline-block; margin-top: 22px; font-family: var(--font-ui); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; opacity: .75; }
+
+/* ---------- 3 · Dusk ---------- */
+#dusk { color: var(--bone); padding-block: 120px 130px; }
+#dusk .wash { background: radial-gradient(70% 60% at 15% 10%, #6b77a6, transparent 70%), radial-gradient(60% 60% at 90% 40%, #8a5a62, transparent 70%), radial-gradient(90% 70% at 50% 110%, #24264a, transparent 75%), #4a4e78; }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-top: 56px; }
+.pair > div { min-width: 0; }
+.pair h3 { font-family: var(--font-ui); font-weight: 400; font-size: 13px; letter-spacing: .22em; text-transform: uppercase; margin: 14px 0 10px; }
+.pair p { margin: 0; }
+.motion { width: 100%; height: 90px; }
+@media (max-width: 680px) { .pair { grid-template-columns: 1fr; gap: 30px; } }
+
+/* ---------- 4 · Night, the Beyond ---------- */
+#beyond { color: var(--bone); padding-block: 130px 150px; background: var(--indigo); }
+#starCanvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; }
+#beyond .label { color: #c9cfee; }
+.archetypes { display: flex; flex-wrap: wrap; gap: 12px 30px; margin: 40px 0 60px; font-family: var(--font-display); font-size: clamp(20px, 2.6vw, 28px); color: #dfe3f7; }
+.archetypes span { opacity: .85; }
+.met { font-family: var(--font-body); font-style: italic; font-weight: 300; font-size: clamp(24px, 3.4vw, 38px); line-height: 1.3; max-width: 20em; text-wrap: balance; margin: 70px 0 0; }
+
+/* ---------- 5 · Masks ---------- */
+#voices { color: var(--bone); padding-block: 110px 120px; background: #08080f; }
+#voices .wash { background: radial-gradient(40% 40% at 50% 40%, rgba(179,38,47,.13), transparent 75%), #08080f; }
+.masks { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 34px 26px; margin-top: 56px; }
+.mask { background: none; border: 0; color: inherit; cursor: pointer; padding: 0; text-align: center; font: inherit; }
+.mask svg { width: 100%; max-width: 170px; height: auto; display: block; margin: 0 auto 14px; transition: transform .6s ease, filter .6s; filter: drop-shadow(0 0 22px rgba(241,238,226,.08)); }
+.mask:hover svg, .mask[aria-pressed="true"] svg { transform: translateY(-4px); filter: drop-shadow(0 0 26px rgba(234,185,166,.35)); }
+.mask .cap { font-family: var(--font-ui); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; opacity: .6; }
+.mask[aria-pressed="true"] .cap { opacity: 1; color: var(--dawn); }
+.voice-note { margin-top: 42px; font-family: var(--font-ui); font-size: 13px; letter-spacing: .04em; opacity: .62; max-width: 46em; }
+
+/* ---------- 6 · Dawn, the vessel ---------- */
+#vessel { color: var(--ink); padding-block: 120px 120px; }
+#vessel .wash { background: radial-gradient(60% 55% at 70% 85%, #f4d07a, transparent 70%), radial-gradient(70% 60% at 20% 70%, var(--dawn), transparent 72%), radial-gradient(90% 70% at 50% -10%, #6d7bb0, transparent 70%), #e6c2b6; }
+.ark { width: min(100%, 560px); height: auto; margin: 0 0 40px; }
+.holds { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 26px 40px; margin-top: 50px; }
+.holds div { min-width: 0; border-top: 1px solid rgba(28,31,21,.3); padding-top: 14px; }
+.holds b { display: block; font-family: var(--font-ui); font-weight: 500; font-size: 13px; letter-spacing: .18em; text-transform: uppercase; margin-bottom: 6px; }
+
+/* ---------- 7 · Back in the Village ---------- */
+#return { color: var(--ink); padding-block: 110px 80px; }
+#return .wash { background: radial-gradient(60% 60% at 80% 20%, var(--leaf), transparent 70%), radial-gradient(70% 60% at 10% 80%, #d6b98a, transparent 70%), #e3e3bd; }
+.practical { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; margin: 50px 0 54px; }
+.practical div { min-width: 0; }
+.practical dt { font-family: var(--font-ui); font-size: 12px; letter-spacing: .2em; text-transform: uppercase; margin-bottom: 6px; color: var(--olive); font-weight: 500; }
+.practical dd { margin: 0; font-size: 20px; line-height: 1.4; }
+.practical small { display: block; font-family: var(--font-ui); font-size: 12px; letter-spacing: .04em; color: var(--vine); margin-top: 6px; }
+.cta { display: inline-block; text-decoration: none; font-family: var(--font-ui); font-size: 14px; letter-spacing: .16em; text-transform: uppercase;
+  padding: 16px 30px; border-radius: 40px; border: 1px solid var(--ink); transition: background .3s, color .3s; }
+.cta:hover { background: var(--ink); color: #e3e3bd; }
+.foot { margin-top: 90px; font-family: var(--font-ui); font-size: 12px; letter-spacing: .06em; color: rgba(28,31,21,.6); display: flex; flex-wrap: wrap; gap: 8px 24px; }
+</style>
+
+<div class="grain" aria-hidden="true"></div>
+
+<!-- 1 · Village -->
+<section class="band" id="village">
+  <div class="wash" data-wash="day"></div>
+  <span class="proto">Prototype · for Raffaello</span>
+  <svg class="ridges" viewBox="0 0 1200 300" preserveAspectRatio="none" aria-hidden="true" id="ridgeSvg"></svg>
+  <div class="inner">
+    <p class="label">An embodied transpersonal journey</p>
+    <h1 class="mark">ARKH<span>È</span></h1>
+    <p class="etym"><b>ἀρχή · arkhē</b> &nbsp;origin, beginning &nbsp;·&nbsp; <b>τύπος · typos</b> &nbsp;imprint, pattern</p>
+    <p class="whisper">There is a whisper that tells us there is more to life than this.</p>
+    <div class="prose">
+      <p>It is the voice of the collective unconscious: the ancient patterns that shape our dreams, our stories and our choices, long before personality, biography or opinion.</p>
+      <p>ARKHÈ is a ritual immersion into the world of these patterns, the archetypes. Not to study them from a distance, but to meet them through the body, in ceremony, embodiment and myth.</p>
+    </div>
+    <div class="facts">
+      <span><b>6</b> days</span><span><b>5</b> nights</span><span><b>1</b> circle</span><span>Alpujarra, Sierra Nevada</span>
+    </div>
+  </div>
+</section>
+
+<!-- 2 · Threshold -->
+<section class="band" id="threshold" aria-labelledby="thTitle">
+  <div class="wash"></div>
+  <canvas id="leafCanvas" aria-hidden="true"></canvas>
+  <div class="inner" style="width:100%">
+    <div class="thresh-box">
+      <p class="label" style="color:var(--bone)">The threshold</p>
+      <h2 id="thTitle">Before you go further, pause.</h2>
+      <p>Every journey into the Beyond begins by leaving something behind. Take three slow breaths here.</p>
+      <div class="breath" id="breath" aria-live="polite">here</div>
+      <button class="btn" id="beginBreath" type="button">Begin to breathe</button>
+      <div class="letgo" id="letgo">
+        <label for="letgoInput">What will you leave in the Village?</label>
+        <input id="letgoInput" type="text" maxlength="40" autocomplete="off" placeholder="one word">
+        <div><span class="dissolve" id="dissolve" aria-hidden="true"></span></div>
+      </div>
+      <div class="crossed" id="crossed">
+        <p><em>Let it go. You may enter.</em></p>
+        <a class="btn" href="#dusk" style="text-decoration:none;display:inline-block">Cross</a>
+      </div>
+      <a class="skip" href="#dusk" id="skip">Continue without pausing</a>
+    </div>
+  </div>
+</section>
+
+<!-- 3 · Dusk -->
+<section class="band" id="dusk">
+  <div class="wash" data-wash="dusk"></div>
+  <div class="inner">
+    <p class="label" style="color:#d9dcf3">Dusk</p>
+    <h2>We do not seek perfection.<br>We seek wholeness.</h2>
+    <div class="prose">
+      <p>Perfection is reached only by cutting parts of ourselves away. Wholeness includes them: the light and the dark, the noble and the not-so-noble, the masculine and the feminine that move in all of us.</p>
+      <p>Here the noise grows quieter. The emotional body wakes up. What cannot be explained can be felt.</p>
+    </div>
+    <div class="pair">
+      <div>
+        <svg class="motion hand" id="flowLine" viewBox="0 0 400 90" preserveAspectRatio="none" aria-hidden="true"></svg>
+        <h3>Receiving</h3>
+        <p>Softness, flow, surrender to what moves you.</p>
+      </div>
+      <div>
+        <svg class="motion hand" id="formLine" viewBox="0 0 400 90" preserveAspectRatio="none" aria-hidden="true"></svg>
+        <h3>Giving form</h3>
+        <p>Clarity, direction, the strength to hold.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 · Night -->
+<section class="band" id="beyond">
+  <canvas id="starCanvas" aria-hidden="true"></canvas>
+  <div class="inner">
+    <p class="label">Night · the Beyond</p>
+    <h2>Where the archetypes live</h2>
+    <div class="prose">
+      <p>Beneath the personal lies a deeper layer that all humans share. Its figures appear in every culture, every mythology, every night’s dreams. They have always shaped your life.</p>
+      <p>The question is whether you will meet them consciously.</p>
+    </div>
+    <div class="archetypes" aria-label="Some of the figures of the collective unconscious">
+      <span>Mother</span><span>Father</span><span>King</span><span>Lover</span><span>Trickster</span><span>Warrior</span><span>Wise One</span><span>Magician</span><span>Child</span><span>Shadow</span>
+    </div>
+    <div class="prose">
+      <p>What happens in the Beyond is not told in advance. That is part of its power. You cannot prepare your mind for it, and you do not need to.</p>
+    </div>
+    <p class="met">We met each other in the Village, and got to know each other in the Beyond.</p>
+  </div>
+</section>
+
+<!-- 5 · Voices -->
+<section class="band" id="voices">
+  <div class="wash"></div>
+  <div class="inner">
+    <p class="label" style="color:var(--dawn)">Voices from the circle</p>
+    <h2>Strangers became soul family</h2>
+    <div class="prose"><p>Mask after mask. Behind each one, someone who crossed the threshold. Touch a mask to listen.</p></div>
+    <div class="masks" id="masks"></div>
+    <p class="voice-note" id="voiceNote" aria-live="polite">Recordings to come. Each voice will be shared only with the person’s consent, and only about how it felt, never about what happened.</p>
+  </div>
+</section>
+
+<!-- 6 · Dawn, the vessel -->
+<section class="band" id="vessel">
+  <div class="wash" data-wash="dawn"></div>
+  <div class="inner">
+    <p class="label" style="color:var(--olive)">Dawn · the vessel</p>
+    <svg class="ark hand" id="arkSvg" viewBox="0 0 560 200" aria-hidden="true"></svg>
+    <h2>Arkhè, the origin.<br>Arca, the vessel.</h2>
+    <div class="prose">
+      <p>A journey like this needs a container strong enough to carry everyone through the flood and land them safely on new ground.</p>
+      <p>ARKHÈ is created and led by Raffaello Manacorda, lead facilitator with ISTA, the International School of Temple Arts, teacher, coach and researcher of the transpersonal.</p>
+    </div>
+    <div class="holds">
+      <div><b>Presence</b>Grounded, real, unhurried.</div>
+      <div><b>Integrity</b>A container held with care and clear boundaries.</div>
+      <div><b>Honesty</b>No pretence, no performance.</div>
+      <div><b>Curiosity</b>Genuinely enchanted by the people in the circle.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 7 · Return -->
+<section class="band" id="return">
+  <div class="wash" data-wash="return"></div>
+  <div class="inner">
+    <p class="label" style="color:var(--olive)">Back in the Village</p>
+    <h2>Every journey into the Beyond has to land back in the Village.</h2>
+    <div class="prose"><p>You return carrying something that cannot be put into words, and that the people around you will feel anyway.</p></div>
+    <dl class="practical">
+      <div><dt>When</dt><dd>September 2027</dd><small>Exact dates to be announced</small></div>
+      <div><dt>Where</dt><dd>Hidden Paradise, Alpujarra, Andalusia</dd></div>
+      <div><dt>Length</dt><dd>Six days, five nights, fully residential</dd></div>
+      <div><dt>For whom</dt><dd>Those who have heard the call, with ISTA Level 1 or equivalent embodied training</dd></div>
+    </dl>
+    <a class="cta" href="https://www.malachitevents.com/arkhe" target="_blank" rel="noopener">Learn more and apply</a>
+    <div class="foot"><span>ARKHÈ · Raffaello Manacorda</span><span>Prototype, not the official site</span></div>
+  </div>
+</section>
+
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const rnd = (a, b) => a + Math.random() * (b - a);
+
+  /* ---- washes: never the same twice ---- */
+  const palettes = {
+    day: [['#cdd86c','#e3e6a9','#a9c07a','#d9dfa4'], ['#8aa3cf','#b5c6e2','#9fb3d6'], '#dde3b6'],
+    dusk: [['#6b77a6','#7d6a9a','#5c6699'], ['#8a5a62','#9b6b5f','#7a4f6b'], '#454a75'],
+    dawn: [['#f4d07a','#f2c08a','#f6dc96'], ['#eab9a6','#e7a99a','#f0c4b0'], '#e4c1b3'],
+    return: [['#cdd86c','#bfcf72','#d8dd8c'], ['#d6b98a','#c9a46f','#dcc39b'], '#e2e2bb']
+  };
+  const pick = a => a[Math.floor(Math.random() * a.length)];
+  function wash(el) {
+    const p = palettes[el.dataset.wash]; if (!p) return;
+    el.style.background =
+      `radial-gradient(${rnd(45,75)}% ${rnd(40,65)}% at ${rnd(5,40)}% ${rnd(5,45)}%, ${pick(p[0])}, transparent 72%),` +
+      `radial-gradient(${rnd(50,80)}% ${rnd(45,70)}% at ${rnd(60,95)}% ${rnd(20,70)}%, ${pick(p[1])}, transparent 72%),` +
+      `radial-gradient(${rnd(60,90)}% ${rnd(50,70)}% at ${rnd(30,70)}% ${rnd(80,110)}%, ${pick(p[0])}, transparent 75%), ${p[2]}`;
+  }
+  const washes = document.querySelectorAll('[data-wash]');
+  washes.forEach(wash);
+  if (!reduce) setInterval(() => washes.forEach(wash), 14000);
+
+  /* ---- hand-drawn helpers ---- */
+  function wobbly(points, j) {
+    return points.map(([x, y], i) => `${i ? 'L' : 'M'}${(x + rnd(-j, j)).toFixed(1)},${(y + rnd(-j, j)).toFixed(1)}`).join(' ');
+  }
+
+  /* ---- ridges in the Village ---- */
+  const ridge = document.getElementById('ridgeSvg');
+  const ridgeCols = ['#9fb3d6', '#8aa3cf', '#7189bb', '#66702f'];
+  ridgeCols.forEach((c, k) => {
+    const base = 120 + k * 45, pts = [];
+    for (let x = -20; x <= 1220; x += 40) pts.push([x, base - Math.sin(x / (160 + k * 40) + k) * (30 - k * 4) - rnd(0, 18)]);
+    const d = wobbly(pts, 2) + ' L1220,320 L-20,320 Z';
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', d); path.setAttribute('fill', c); path.setAttribute('opacity', (0.35 + k * 0.15).toFixed(2));
+    ridge.appendChild(path);
+  });
+
+  /* ---- dusk: flowing vs. structured line ---- */
+  function drawMotion() {
+    const flow = [], form = [];
+    for (let x = 0; x <= 400; x += 8) flow.push([x, 45 + Math.sin(x / 34 + rnd(0, .3)) * 26]);
+    for (let x = 0; x <= 400; x += 50) form.push([x, x % 100 ? 18 : 72]);
+    document.getElementById('flowLine').innerHTML = `<path d="${wobbly(flow, 1.2)}" fill="none" stroke="#f1eee2" stroke-width="1.6" stroke-linecap="round"/>`;
+    document.getElementById('formLine').innerHTML = `<path d="${wobbly(form, 2)}" fill="none" stroke="#f1eee2" stroke-width="1.6" stroke-linejoin="round"/>`;
+  }
+  drawMotion();
+  if (!reduce) setInterval(drawMotion, 2600);
+
+  /* ---- the vessel ---- */
+  (function drawArk() {
+    const s = document.getElementById('arkSvg');
+    const hull = wobbly([[90,110],[140,150],[280,162],[420,150],[470,110]], 2);
+    const deck = wobbly([[110,110],[450,110]], 1.5);
+    let waves = '';
+    for (let r = 0; r < 4; r++) {
+      const pts = []; for (let x = 0; x <= 560; x += 14) pts.push([x, 168 + r * 9 + Math.sin(x / 22 + r) * 3]);
+      waves += `<path d="${wobbly(pts, .8)}" fill="none" stroke="#4a7ae5" stroke-opacity="${.55 - r * .1}" stroke-width="1.3"/>`;
+    }
+    s.innerHTML = `<circle cx="420" cy="78" r="44" fill="#f4d07a" opacity=".85"/>` + waves +
+      `<path d="${hull}" fill="none" stroke="#1c1f15" stroke-width="2" stroke-linecap="round"/>` +
+      `<path d="${deck}" fill="none" stroke="#1c1f15" stroke-width="1.6"/>` +
+      `<path d="${wobbly([[250,110],[250,40]],1.5)}" fill="none" stroke="#1c1f15" stroke-width="1.6"/>` +
+      `<path d="M252,48 Q300,70 252,98" fill="none" stroke="#b3262f" stroke-width="1.6"/>`;
+  })();
+
+  /* ---- masks ---- */
+  const maskData = [
+    { k: 'round', label: 'Voice I' }, { k: 'split', label: 'Voice II' }, { k: 'angular', label: 'Voice III' },
+    { k: 'tall', label: 'Voice IV' }, { k: 'moon', label: 'Voice V' }, { k: 'leaf', label: 'Voice VI' }
+  ];
+  function maskSvg(k) {
+    const stroke = '#f1eee2';
+    let shape;
+    if (k === 'round') shape = `<ellipse cx="80" cy="95" rx="58" ry="74" fill="#16161f" stroke="${stroke}" stroke-width="1.4"/>`;
+    else if (k === 'split') shape = `<path d="M80,20 C30,20 22,90 30,120 C40,160 70,172 80,172 Z" fill="#f1eee2"/><path d="M80,20 C130,20 138,90 130,120 C120,160 90,172 80,172 Z" fill="#16161f" stroke="${stroke}" stroke-width="1.4"/>`;
+    else if (k === 'angular') shape = `<path d="M80,18 L138,58 L128,140 L80,174 L32,140 L22,58 Z" fill="#16161f" stroke="${stroke}" stroke-width="1.4"/>`;
+    else if (k === 'tall') shape = `<path d="M80,10 C122,30 128,120 112,160 C102,178 58,178 48,160 C32,120 38,30 80,10 Z" fill="#16161f" stroke="${stroke}" stroke-width="1.4"/>`;
+    else if (k === 'moon') shape = `<path d="M110,24 A74,74 0 1 0 110,168 A58,62 0 1 1 110,24 Z" fill="#16161f" stroke="${stroke}" stroke-width="1.4"/>`;
+    else shape = `<path d="M80,14 C140,50 140,140 80,178 C20,140 20,50 80,14 Z" fill="#16161f" stroke="${stroke}" stroke-width="1.4"/><path d="M80,20 L80,172" stroke="${stroke}" stroke-opacity=".35"/>`;
+    const eyeFill = k === 'split' ? '#08080f' : '#08080f';
+    const eyes = `<ellipse cx="58" cy="82" rx="11" ry="6" fill="${eyeFill}" stroke="${stroke}" stroke-opacity=".7"/><ellipse cx="102" cy="82" rx="11" ry="6" fill="${eyeFill}" stroke="${stroke}" stroke-opacity=".7"/>`;
+    const mouth = `<ellipse class="mouth" cx="80" cy="136" rx="13" ry="3" fill="#b3262f"/>`;
+    return `<svg viewBox="0 0 160 190" aria-hidden="true">${shape}${eyes}${mouth}</svg>`;
+  }
+  const maskWrap = document.getElementById('masks'), note = document.getElementById('voiceNote');
+  maskData.forEach(m => {
+    const b = document.createElement('button');
+    b.className = 'mask'; b.type = 'button'; b.setAttribute('aria-pressed', 'false');
+    b.innerHTML = maskSvg(m.k) + `<span class="cap">${m.label}</span>`;
+    b.addEventListener('click', () => {
+      maskWrap.querySelectorAll('.mask').forEach(x => { x.setAttribute('aria-pressed', 'false'); x.querySelector('.mouth').setAttribute('ry', 3); });
+      b.setAttribute('aria-pressed', 'true');
+      const mouth = b.querySelector('.mouth');
+      let t = 0; const iv = setInterval(() => { mouth.setAttribute('ry', (3 + Math.abs(Math.sin(t)) * 7).toFixed(1)); t += .5; if (t > 14) { clearInterval(iv); mouth.setAttribute('ry', 3); } }, 90);
+      note.textContent = `${m.label}: recording to come. Each voice will be shared only with the person’s consent, and only about how it felt, never about what happened.`;
+    });
+    maskWrap.appendChild(b);
+  });
+
+  /* ---- leaves at the threshold ---- */
+  const lc = document.getElementById('leafCanvas'), lx = lc.getContext('2d');
+  let leaves = [], part = 0, partTarget = 0;
+  const leafCols = ['#cdd86c', '#bfcf5f', '#a8b94b', '#dfe28a', '#8d9b3c', '#e6d36a'];
+  function sizeLeaves() {
+    const r = lc.getBoundingClientRect(), d = devicePixelRatio || 1;
+    lc.width = r.width * d; lc.height = r.height * d; lx.setTransform(d, 0, 0, d, 0, 0);
+    leaves = [];
+    const n = Math.round(r.width * r.height / 2600);
+    for (let i = 0; i < n; i++) {
+      const x = rnd(0, r.width), y = rnd(0, r.height);
+      leaves.push({ x, y, s: rnd(14, 34), a: rnd(0, Math.PI * 2), c: pick(leafCols), o: rnd(.55, .95),
+        dx: x - r.width / 2, dy: y - r.height / 2, sw: rnd(0, 6.28) });
+    }
+  }
+  function drawLeaves(t) {
+    const r = lc.getBoundingClientRect();
+    lx.clearRect(0, 0, r.width, r.height);
+    part += (partTarget - part) * 0.02;
+    for (const L of leaves) {
+      const dist = Math.hypot(L.dx, L.dy) || 1;
+      const push = part * (Math.max(r.width, r.height) * .7);
+      const x = L.x + (L.dx / dist) * push, y = L.y + (L.dy / dist) * push;
+      const sway = reduce ? 0 : Math.sin(t / 1400 + L.sw) * .12;
+      lx.save(); lx.translate(x, y); lx.rotate(L.a + sway);
+      lx.globalAlpha = L.o * (1 - part * .6);
+      lx.fillStyle = L.c;
+      lx.beginPath(); lx.moveTo(0, -L.s); lx.quadraticCurveTo(L.s * .6, 0, 0, L.s); lx.quadraticCurveTo(-L.s * .6, 0, 0, -L.s); lx.fill();
+      lx.strokeStyle = 'rgba(60,70,20,.35)'; lx.lineWidth = .8; lx.beginPath(); lx.moveTo(0, -L.s); lx.lineTo(0, L.s); lx.stroke();
+      lx.restore();
+    }
+    requestAnimationFrame(drawLeaves);
+  }
+  sizeLeaves(); requestAnimationFrame(drawLeaves);
+  addEventListener('resize', () => { sizeLeaves(); sizeStars(); });
+
+  /* ---- breathing ---- */
+  const breath = document.getElementById('breath'), begin = document.getElementById('beginBreath');
+  const letgo = document.getElementById('letgo'), input = document.getElementById('letgoInput');
+  const dissolve = document.getElementById('dissolve'), crossed = document.getElementById('crossed');
+  begin.addEventListener('click', () => {
+    begin.disabled = true; begin.style.display = 'none';
+    let n = 0;
+    const cycle = () => {
+      if (n >= 3) { breath.textContent = 'and let go'; breath.style.transform = 'scale(1)'; letgo.classList.add('on'); input.focus(); return; }
+      breath.textContent = 'breathe in'; breath.style.transform = 'scale(1.45)';
+      partTarget = Math.min(.55, partTarget + .14);
+      setTimeout(() => { breath.textContent = 'breathe out'; breath.style.transform = 'scale(.9)'; }, 4000);
+      setTimeout(() => { n++; cycle(); }, 10000);
+    };
+    cycle();
+  });
+  function release() {
+    const word = input.value.trim(); if (!word) return;
+    input.value = ''; input.disabled = true;
+    dissolve.innerHTML = [...word].map(ch => `<span>${ch.replace(/[<>&]/g, '')}</span>`).join('');
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      dissolve.querySelectorAll('span').forEach(s => {
+        s.style.transform = `translate(${rnd(-90, 90)}px, ${rnd(-120, -40)}px) rotate(${rnd(-60, 60)}deg)`;
+        s.style.opacity = 0; s.style.filter = 'blur(4px)';
+      });
+    }));
+    partTarget = 1;
+    setTimeout(() => { crossed.classList.add('on'); document.getElementById('skip').hidden = true; }, 2600);
+  }
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); release(); } });
+  input.addEventListener('blur', () => { if (input.value.trim()) release(); });
+
+  /* ---- stars gathering into a circle ---- */
+  const sc = document.getElementById('starCanvas'), sx = sc.getContext('2d');
+  const beyond = document.getElementById('beyond');
+  let stars = [];
+  function sizeStars() {
+    const r = sc.getBoundingClientRect(), d = devicePixelRatio || 1;
+    sc.width = r.width * d; sc.height = r.height * d; sx.setTransform(d, 0, 0, d, 0, 0);
+    const n = Math.round(r.width * r.height / 2200), cx = r.width * .72, cy = r.height * .55, R = Math.min(r.width, r.height) * .2;
+    stars = [];
+    for (let i = 0; i < n; i++) {
+      const gather = i % 9 === 0, ang = (i / n) * Math.PI * 2 * 9;
+      stars.push({ x: rnd(0, r.width), y: rnd(0, r.height), z: rnd(.3, 1.6), tw: rnd(0, 6.28), gather,
+        tx: cx + Math.cos(ang) * R * rnd(.96, 1.04), ty: cy + Math.sin(ang) * R * rnd(.96, 1.04) });
+    }
+  }
+  function drawStars(t) {
+    const r = sc.getBoundingClientRect();
+    sx.clearRect(0, 0, r.width, r.height);
+    const g = sx.createRadialGradient(r.width * .3, r.height * .2, 0, r.width * .3, r.height * .2, r.width * .9);
+    g.addColorStop(0, '#1d2050'); g.addColorStop(1, '#0f1128');
+    sx.fillStyle = g; sx.fillRect(0, 0, r.width, r.height);
+    const vh = innerHeight, b = beyond.getBoundingClientRect();
+    const p = Math.min(1, Math.max(0, (vh - b.top) / (b.height + vh * .2)));
+    const gp = reduce ? 1 : Math.min(1, Math.max(0, (p - .25) / .5));
+    for (const s of stars) {
+      const x = s.gather ? s.x + (s.tx - s.x) * gp : s.x, y = s.gather ? s.y + (s.ty - s.y) * gp : s.y;
+      const a = .35 + Math.abs(Math.sin(t / 1600 + s.tw)) * .65;
+      sx.globalAlpha = s.gather ? Math.min(1, a + gp * .3) : a * .8;
+      sx.fillStyle = s.gather ? '#f6e6c8' : '#e6e9fb';
+      sx.beginPath(); sx.arc(x, y, s.z * (s.gather ? 1.2 : 1), 0, 6.283); sx.fill();
+    }
+    sx.globalAlpha = 1;
+    requestAnimationFrame(drawStars);
+  }
+  sizeStars(); requestAnimationFrame(drawStars);
+})();
+</script>
