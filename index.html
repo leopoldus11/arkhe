@@ -141,7 +141,6 @@ body.gated #journey ~ section, body.gated #journey ~ footer { display: none; }
 .dissolve span { display: inline-block; transition: transform 3.5s ease-out, opacity 3.5s ease-out, filter 3.5s; }
 .crossed { display: none; margin-top: 20px; }
 .crossed.on { display: block; }
-.skip { display: inline-block; margin-top: 22px; font-family: var(--font-ui); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; opacity: .75; }
 
 /* ---------- 3 · Dusk ---------- */
 #dusk { color: var(--bone); padding-block: 40px 130px; background: #211c33; }
@@ -276,7 +275,6 @@ body.gated #journey ~ section, body.gated #journey ~ footer { display: none; }
         <p><em>Let it go. You may enter.</em></p>
         <a class="btn" href="#dusk" id="crossBtn" style="text-decoration:none;display:inline-block">Cross</a>
       </div>
-      <a class="skip" href="#dusk" id="skip">Continue without pausing</a>
     </div>
   </div>
 </section>
@@ -660,10 +658,10 @@ body.gated #journey ~ section, body.gated #journey ~ footer { display: none; }
 
   /* ---- the veil of real leaves opens with each breath ---- */
   const veil = document.getElementById('veil');
-  let part = 0, partTarget = 0;
+  let part = 0, partTarget = 0, pull = 0, pullAt = 0;
   (function openVeil() {
     part += (partTarget - part) * 0.018;
-    const eff = Math.max(part, typeof curQ === 'number' ? Math.min(1, curQ / .45) : 0);
+    const eff = Math.max(part, pull * .72, typeof curQ === 'number' ? Math.min(1, curQ / .45) : 0);
     veil.style.setProperty('--open', (eff * 95).toFixed(2));
     veil.style.opacity = (1 - Math.max(0, eff - .7) * 2.2).toFixed(3);
     requestAnimationFrame(openVeil);
@@ -697,14 +695,15 @@ body.gated #journey ~ section, body.gated #journey ~ footer { display: none; }
       });
     }));
     partTarget = 1;
-    setTimeout(() => { crossed.classList.add('on'); document.getElementById('skip').hidden = true; }, 2600);
+    setTimeout(() => { crossed.classList.add('on'); }, 2600);
   }
   /* ---- crossing: the page beyond the threshold only exists once you choose to go ---- */
   document.body.classList.add('gated');
   let crossing = 0;
   function cross(e) {
-    e.preventDefault();
-    document.body.classList.remove('gated');
+    if (e) e.preventDefault();
+    if (!document.body.classList.contains('gated')) return;
+    document.body.classList.remove('gated'); pull = 0;
     sizeStars(); sizeFire(); readScroll();
     const from = scrollY, to = journey.offsetTop + village.offsetHeight * 8, dur = reduce ? 0 : 6500, t0 = performance.now(), id = ++crossing;
     const stop = () => { crossing++; };
@@ -717,7 +716,26 @@ body.gated #journey ~ section, body.gated #journey ~ footer { display: none; }
     })(t0);
   }
   document.getElementById('crossBtn').addEventListener('click', cross);
-  document.getElementById('skip').addEventListener('click', cross);
+
+  /* ---- or lean in: scrolling on at the threshold parts the leaves; keep going and you are through ---- */
+  const atThreshold = () => document.body.classList.contains('gated') && scrollY >= document.documentElement.scrollHeight - innerHeight - 4 && cur > .97;
+  function lean(amount) {
+    if (!atThreshold() || amount <= 0) return;
+    pull = Math.min(1, pull + amount); pullAt = performance.now();
+    if (pull >= 1) cross();
+  }
+  addEventListener('wheel', e => lean(Math.min(e.deltaY, 120) / (innerHeight * 1.6)), { passive: true });
+  let lastTouchY = null;
+  addEventListener('touchstart', e => { lastTouchY = e.touches[0].clientY; }, { passive: true });
+  addEventListener('touchmove', e => { const y = e.touches[0].clientY; if (lastTouchY !== null) lean((lastTouchY - y) / (innerHeight * 1.1)); lastTouchY = y; }, { passive: true });
+  addEventListener('keydown', e => {
+    if (document.activeElement && /INPUT|TEXTAREA|BUTTON/.test(document.activeElement.tagName)) return;
+    if (['ArrowDown', 'PageDown', ' ', 'End'].includes(e.key)) lean(e.key === 'ArrowDown' ? .12 : .34);
+  });
+  (function settle(now) {             // stop leaning, and the leaves slowly close again
+    if (pull > 0 && now - pullAt > 260) pull = Math.max(0, pull - .012);
+    requestAnimationFrame(settle);
+  })(performance.now());
   input.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); release(); } });
   input.addEventListener('blur', () => { if (input.value.trim()) release(); });
 
