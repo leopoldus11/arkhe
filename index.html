@@ -48,29 +48,45 @@ a { color: inherit; }
 svg.hand { display: block; overflow: visible; }
 
 /* prototype note */
-.proto { position: absolute; z-index: 5; top: 14px; right: max(16px, env(safe-area-inset-right, 0px));
+.proto { position: absolute; z-index: 5; top: 14px; color: var(--bone) !important; background: rgba(12,16,8,.35) !important; border-color: rgba(241,238,226,.5) !important; right: max(16px, env(safe-area-inset-right, 0px));
   font-family: var(--font-ui); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink);
   border: 1px solid rgba(28,31,21,.35); padding: 6px 10px; border-radius: 2px; background: rgba(241,238,226,.45); }
 
-/* ---------- 1 · Village (day) ---------- */
-#village { color: var(--ink); padding-block: 96px 120px; }
-#village .wash { background: radial-gradient(60% 50% at 20% 20%, var(--leaf), transparent 70%), radial-gradient(70% 60% at 85% 30%, #e7e9b8, transparent 70%), radial-gradient(80% 70% at 50% 100%, var(--horizon), transparent 75%), #dfe4b9; }
-.mark { font-family: var(--font-display); font-size: clamp(76px, 17vw, 210px); line-height: .9; letter-spacing: .06em; margin: 26px 0 30px -4px; color: var(--ink); }
-.mark span { color: var(--olive); }
-.etym { font-family: var(--font-ui); font-size: 14px; letter-spacing: .08em; color: rgba(28,31,21,.75); margin-bottom: 46px; }
-.etym b { font-weight: 500; color: var(--ink); }
-.whisper { font-family: var(--font-body); font-style: italic; font-weight: 300; font-size: clamp(24px, 3.4vw, 36px); line-height: 1.3; max-width: 22em; margin: 0 0 48px; text-wrap: balance; }
-.facts { display: flex; flex-wrap: wrap; gap: 10px 34px; font-family: var(--font-ui); font-size: 14px; letter-spacing: .06em; margin-top: 46px; }
+/* ---------- 1 · Village (day): the real valley ---------- */
+#village { color: var(--bone); min-height: 100svh; display: flex; align-items: flex-end; padding-block: 120px 90px; background: #1b2414; }
+.photo { position: absolute; inset: -4%; z-index: 0; background: center 38% / cover no-repeat; will-change: transform; }
+#village .photo { background-image: url("assets/valley.jpg"); animation: drift 48s ease-in-out infinite alternate; }
+@keyframes drift { from { transform: scale(1.02) translate3d(0,0,0); } to { transform: scale(1.1) translate3d(-1.2%, -1%, 0); } }
+.sun { position: absolute; z-index: 1; top: -22vmin; right: 4vw; width: 78vmin; height: 78vmin; border-radius: 50%; pointer-events: none; mix-blend-mode: screen;
+  background: radial-gradient(circle, rgba(255,252,236,1) 0%, rgba(255,240,186,.92) 8%, rgba(255,216,140,.5) 24%, rgba(255,196,110,.18) 46%, transparent 70%);
+  animation: breatheSun 9s ease-in-out infinite alternate; }
+@keyframes breatheSun { from { opacity: .82; transform: scale(1); } to { opacity: 1; transform: scale(1.06); } }
+#rays { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; mix-blend-mode: screen; filter: blur(14px); }
+#motes { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; mix-blend-mode: screen; }
+.scrim { position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(90deg, rgba(12,16,8,.66) 0%, rgba(12,16,8,.34) 42%, transparent 72%), linear-gradient(0deg, rgba(12,16,8,.7) 0%, transparent 38%); }
+.mark { font-family: var(--font-display); font-size: clamp(76px, 17vw, 210px); line-height: .9; letter-spacing: .06em; margin: 26px 0 30px -4px; color: var(--bone); text-shadow: 0 4px 50px rgba(0,0,0,.45); }
+.mark span { color: var(--leaf); }
+.etym { font-family: var(--font-ui); font-size: 14px; letter-spacing: .08em; color: rgba(241,238,226,.8); margin-bottom: 40px; }
+.etym b { font-weight: 500; color: var(--bone); }
+.whisper { font-family: var(--font-body); font-style: italic; font-weight: 300; font-size: clamp(24px, 3.4vw, 36px); line-height: 1.3; max-width: 22em; margin: 0 0 36px; text-wrap: balance; text-shadow: 0 2px 24px rgba(0,0,0,.6); }
+#village .prose { text-shadow: 0 1px 14px rgba(0,0,0,.75); }
+.facts { display: flex; flex-wrap: wrap; gap: 10px 34px; font-family: var(--font-ui); font-size: 14px; letter-spacing: .06em; margin-top: 36px; }
 .facts span { display: flex; gap: 8px; align-items: baseline; }
 .facts b { font-weight: 500; }
-.ridges { position: absolute; left: 0; right: 0; bottom: 0; z-index: 1; height: 42%; }
 
 /* ---------- 2 · Threshold ---------- */
 #threshold { color: var(--bone); min-height: 680px; padding-block: 90px; display: flex; align-items: center; }
-#threshold .wash { background: linear-gradient(180deg, #9db0d6 0%, #8a9fc8 40%, #6c7fa8 100%); }
-#leafCanvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; }
+#threshold { background: #2b3350; }
+#threshold .far { position: absolute; inset: -4%; z-index: 0; background: url("assets/valley.jpg") 60% 30% / 230% auto no-repeat; filter: saturate(.75) brightness(.8) hue-rotate(-8deg); }
+#threshold .far::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(120,110,160,.35), rgba(40,48,86,.55)); }
+#veil { position: absolute; inset: -6%; z-index: 1; background: url("assets/leaves.jpg") center / cover no-repeat; --open: 0;
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent calc(var(--open) * 1vmax), #000 calc(var(--open) * 1vmax + 16vmax));
+  mask-image: radial-gradient(circle at 50% 50%, transparent calc(var(--open) * 1vmax), #000 calc(var(--open) * 1vmax + 16vmax));
+  animation: sway 13s ease-in-out infinite alternate; will-change: transform; }
+@keyframes sway { from { transform: scale(1.03) rotate(-.5deg) translate3d(-.6%, 0, 0); } to { transform: scale(1.07) rotate(.6deg) translate3d(.8%, -.6%, 0); } }
 .thresh-box { position: relative; z-index: 3; text-align: center; margin: 0 auto; max-width: 30em; padding: 34px 26px; border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(40,48,86,.62), rgba(40,48,86,.35) 65%, transparent); }
+  background: radial-gradient(closest-side, rgba(16,20,34,.72), rgba(16,20,34,.45) 65%, transparent); }
 .thresh-box h2 { color: var(--bone); text-shadow: 0 2px 30px rgba(15,17,40,.55); }
 .thresh-box p { text-shadow: 0 1px 18px rgba(15,17,40,.7); }
 .breath { width: 150px; height: 150px; margin: 28px auto 22px; border-radius: 50%; display: grid; place-items: center;
@@ -145,10 +161,13 @@ svg.hand { display: block; overflow: visible; }
 
 <!-- 1 · Village -->
 <section class="band" id="village">
-  <div class="wash" data-wash="day"></div>
-  <span class="proto">Prototype · for Raffaello</span>
-  <svg class="ridges" viewBox="0 0 1200 300" preserveAspectRatio="none" aria-hidden="true" id="ridgeSvg"></svg>
-  <div class="inner">
+  <div class="photo" id="valleyPhoto" role="img" aria-label="The valley below Hidden Paradise in the Alpujarra, with ridges fading toward the sea"></div>
+  <div class="sun" aria-hidden="true"></div>
+  <canvas id="rays" aria-hidden="true"></canvas>
+  <canvas id="motes" aria-hidden="true"></canvas>
+  <div class="scrim" aria-hidden="true"></div>
+  <span class="proto">Prototype v2 · for Raffaello</span>
+  <div class="inner" style="width:100%">
     <p class="label">An embodied transpersonal journey</p>
     <h1 class="mark">ARKH<span>È</span></h1>
     <p class="etym"><b>ἀρχή · arkhē</b> &nbsp;origin, beginning &nbsp;·&nbsp; <b>τύπος · typos</b> &nbsp;imprint, pattern</p>
@@ -165,8 +184,8 @@ svg.hand { display: block; overflow: visible; }
 
 <!-- 2 · Threshold -->
 <section class="band" id="threshold" aria-labelledby="thTitle">
-  <div class="wash"></div>
-  <canvas id="leafCanvas" aria-hidden="true"></canvas>
+  <div class="far" aria-hidden="true"></div>
+  <div id="veil" role="img" aria-label="Mulberry leaves at Hidden Paradise, with the valley behind them"></div>
   <div class="inner" style="width:100%">
     <div class="thresh-box">
       <p class="label" style="color:var(--bone)">The threshold</p>
@@ -312,17 +331,52 @@ svg.hand { display: block; overflow: visible; }
     return points.map(([x, y], i) => `${i ? 'L' : 'M'}${(x + rnd(-j, j)).toFixed(1)},${(y + rnd(-j, j)).toFixed(1)}`).join(' ');
   }
 
-  /* ---- ridges in the Village ---- */
-  const ridge = document.getElementById('ridgeSvg');
-  const ridgeCols = ['#9fb3d6', '#8aa3cf', '#7189bb', '#66702f'];
-  ridgeCols.forEach((c, k) => {
-    const base = 120 + k * 45, pts = [];
-    for (let x = -20; x <= 1220; x += 40) pts.push([x, base - Math.sin(x / (160 + k * 40) + k) * (30 - k * 4) - rnd(0, 18)]);
-    const d = wobbly(pts, 2) + ' L1220,320 L-20,320 Z';
-    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    path.setAttribute('d', d); path.setAttribute('fill', c); path.setAttribute('opacity', (0.35 + k * 0.15).toFixed(2));
-    ridge.appendChild(path);
-  });
+  /* ---- sunbeams and dust in the valley ---- */
+  const rc = document.getElementById('rays'), rx = rc.getContext('2d');
+  const mc = document.getElementById('motes'), mx = mc.getContext('2d');
+  const village = document.getElementById('village'), valleyPhoto = document.getElementById('valleyPhoto');
+  let beams = [], motes = [], RW = 0, RH = 0, sunX = 0, sunY = 0, px = 0, py = 0;
+  function sizeRays() {
+    const r = village.getBoundingClientRect(), d = Math.min(devicePixelRatio || 1, 2);
+    RW = r.width; RH = r.height;
+    rc.width = RW / 2; rc.height = RH / 2; rx.setTransform(.5, 0, 0, .5, 0, 0);
+    mc.width = RW * d; mc.height = RH * d; mx.setTransform(d, 0, 0, d, 0, 0);
+    sunX = RW - Math.max(RW * .04, 0) - Math.min(RW, RH) * .39; sunY = Math.min(RW, RH) * .17;
+    beams = [];
+    for (let i = 0; i < 16; i++) beams.push({ a: rnd(Math.PI * .22, Math.PI * .98), w: rnd(.012, .06), len: rnd(.75, 1.5), s: rnd(.00012, .0005), ph: rnd(0, 6.28), dr: rnd(-.00002, .00002) });
+    motes = [];
+    const n = Math.round(RW * RH / 16000);
+    for (let i = 0; i < n; i++) motes.push({ x: rnd(0, RW), y: rnd(0, RH), r: rnd(.5, 1.9), vx: rnd(-.06, .1), vy: rnd(-.09, .04), ph: rnd(0, 6.28) });
+  }
+  function drawRays(t) {
+    const b = village.getBoundingClientRect();
+    if (b.bottom > 0) {
+      const L = Math.hypot(RW, RH);
+      rx.clearRect(0, 0, RW, RH);
+      for (const B of beams) {
+        const a = B.a + Math.sin(t * B.s * .6 + B.ph) * .035 + px * .05;
+        const alpha = (.2 + (Math.sin(t * B.s + B.ph) + 1) * .2);
+        const g = rx.createLinearGradient(sunX, sunY, sunX + Math.cos(a) * L * B.len, sunY + Math.sin(a) * L * B.len);
+        g.addColorStop(0, `rgba(255,244,206,${alpha})`); g.addColorStop(.55, `rgba(255,232,170,${alpha * .45})`); g.addColorStop(1, 'rgba(255,225,160,0)');
+        rx.fillStyle = g; rx.beginPath(); rx.moveTo(sunX, sunY);
+        rx.lineTo(sunX + Math.cos(a - B.w) * L * B.len, sunY + Math.sin(a - B.w) * L * B.len);
+        rx.lineTo(sunX + Math.cos(a + B.w) * L * B.len, sunY + Math.sin(a + B.w) * L * B.len);
+        rx.closePath(); rx.fill();
+      }
+      mx.clearRect(0, 0, RW, RH);
+      for (const m of motes) {
+        if (!reduce) { m.x += m.vx; m.y += m.vy; if (m.x < -5) m.x = RW + 5; if (m.x > RW + 5) m.x = -5; if (m.y < -5) m.y = RH + 5; if (m.y > RH + 5) m.y = -5; }
+        const near = Math.max(0, 1 - Math.hypot(m.x - sunX, m.y - sunY) / (L * .8));
+        mx.globalAlpha = near * (.25 + Math.abs(Math.sin(t / 1300 + m.ph)) * .6);
+        mx.fillStyle = '#fff3cf'; mx.beginPath(); mx.arc(m.x, m.y, m.r, 0, 6.283); mx.fill();
+      }
+      mx.globalAlpha = 1;
+    }
+    if (!reduce) requestAnimationFrame(drawRays);
+  }
+  sizeRays(); requestAnimationFrame(drawRays);
+  village.addEventListener('pointermove', e => { const r = village.getBoundingClientRect(); px = (e.clientX - r.left) / r.width - .5; py = (e.clientY - r.top) / r.height - .5; });
+  if (!reduce) addEventListener('scroll', () => { const y = Math.min(scrollY, innerHeight); valleyPhoto.style.translate = `0 ${y * .18}px`; }, { passive: true });
 
   /* ---- dusk: flowing vs. structured line ---- */
   function drawMotion() {
@@ -386,41 +440,16 @@ svg.hand { display: block; overflow: visible; }
     maskWrap.appendChild(b);
   });
 
-  /* ---- leaves at the threshold ---- */
-  const lc = document.getElementById('leafCanvas'), lx = lc.getContext('2d');
-  let leaves = [], part = 0, partTarget = 0;
-  const leafCols = ['#cdd86c', '#bfcf5f', '#a8b94b', '#dfe28a', '#8d9b3c', '#e6d36a'];
-  function sizeLeaves() {
-    const r = lc.getBoundingClientRect(), d = devicePixelRatio || 1;
-    lc.width = r.width * d; lc.height = r.height * d; lx.setTransform(d, 0, 0, d, 0, 0);
-    leaves = [];
-    const n = Math.round(r.width * r.height / 2600);
-    for (let i = 0; i < n; i++) {
-      const x = rnd(0, r.width), y = rnd(0, r.height);
-      leaves.push({ x, y, s: rnd(14, 34), a: rnd(0, Math.PI * 2), c: pick(leafCols), o: rnd(.55, .95),
-        dx: x - r.width / 2, dy: y - r.height / 2, sw: rnd(0, 6.28) });
-    }
-  }
-  function drawLeaves(t) {
-    const r = lc.getBoundingClientRect();
-    lx.clearRect(0, 0, r.width, r.height);
-    part += (partTarget - part) * 0.02;
-    for (const L of leaves) {
-      const dist = Math.hypot(L.dx, L.dy) || 1;
-      const push = part * (Math.max(r.width, r.height) * .7);
-      const x = L.x + (L.dx / dist) * push, y = L.y + (L.dy / dist) * push;
-      const sway = reduce ? 0 : Math.sin(t / 1400 + L.sw) * .12;
-      lx.save(); lx.translate(x, y); lx.rotate(L.a + sway);
-      lx.globalAlpha = L.o * (1 - part * .6);
-      lx.fillStyle = L.c;
-      lx.beginPath(); lx.moveTo(0, -L.s); lx.quadraticCurveTo(L.s * .6, 0, 0, L.s); lx.quadraticCurveTo(-L.s * .6, 0, 0, -L.s); lx.fill();
-      lx.strokeStyle = 'rgba(60,70,20,.35)'; lx.lineWidth = .8; lx.beginPath(); lx.moveTo(0, -L.s); lx.lineTo(0, L.s); lx.stroke();
-      lx.restore();
-    }
-    requestAnimationFrame(drawLeaves);
-  }
-  sizeLeaves(); requestAnimationFrame(drawLeaves);
-  addEventListener('resize', () => { sizeLeaves(); sizeStars(); });
+  /* ---- the veil of real leaves opens with each breath ---- */
+  const veil = document.getElementById('veil');
+  let part = 0, partTarget = 0;
+  (function openVeil() {
+    part += (partTarget - part) * 0.018;
+    veil.style.setProperty('--open', (part * 95).toFixed(2));
+    veil.style.opacity = (1 - Math.max(0, part - .7) * 2.2).toFixed(3);
+    requestAnimationFrame(openVeil);
+  })();
+  addEventListener('resize', () => { sizeRays(); sizeStars(); });
 
   /* ---- breathing ---- */
   const breath = document.getElementById('breath'), begin = document.getElementById('beginBreath');
