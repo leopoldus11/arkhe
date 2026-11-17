@@ -155,7 +155,15 @@ body.gated #journey ~ section, body.gated #journey ~ footer { display: none; }
 @media (max-width: 680px) { .pair { grid-template-columns: 1fr; gap: 30px; } }
 
 /* ---------- 4 · Night, the Beyond ---------- */
-#beyond { color: var(--bone); padding-block: 130px 150px; background: var(--indigo); }
+#beyond { color: var(--bone); padding-block: 0; height: 580svh; overflow: visible; background: var(--indigo); }
+.nb { position: absolute; left: max(20px, env(safe-area-inset-left, 0px)); right: max(20px, env(safe-area-inset-right, 0px)); top: 50%;
+  opacity: var(--o, 0); transform: translate3d(0, calc(-50% + var(--y, 0px)), 0); will-change: opacity, transform; }
+.nb h2 { color: var(--bone); }
+.nb .say { text-shadow: 0 2px 26px rgba(8,9,24,.9); }
+.say.small { font-size: clamp(19px, 1.9vw, 24px); max-width: 30em; }
+.nb .archetypes { margin: 34px 0 0; max-width: 26em; }
+#beyond .met { position: absolute; z-index: 2; left: 0; right: 0; bottom: calc(clamp(34px, 8svh, 84px) + env(safe-area-inset-bottom, 0px)); margin: 0 auto; max-width: 30em; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); text-align: center; text-wrap: balance; opacity: 0; }
+#dusk::after { content: ""; position: absolute; z-index: 1; inset: auto 0 0 0; height: 360px; background: linear-gradient(180deg, rgba(23,25,62,0), #17193e); pointer-events: none; }
 #starCanvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; }
 #beyond .label { color: #c9cfee; }
 .archetypes { display: flex; flex-wrap: wrap; gap: 12px 30px; margin: 40px 0 60px; font-family: var(--font-display); font-size: clamp(20px, 2.6vw, 28px); color: #dfe3f7; }
@@ -285,21 +293,25 @@ body.gated #journey ~ section, body.gated #journey ~ footer { display: none; }
 
 <!-- 4 · Night -->
 <section class="band" id="beyond">
-  <canvas id="starCanvas" aria-hidden="true"></canvas>
-  <div class="inner">
-    <p class="label">Night · the Beyond</p>
-    <h2>Where the archetypes live</h2>
-    <div class="prose">
-      <p>Beneath the personal lies a deeper layer that all humans share. Its figures appear in every culture, every mythology, every night’s dreams. They have always shaped your life.</p>
-      <p>The question is whether you will meet them consciously.</p>
+  <div class="stage" id="nightStage">
+    <canvas id="starCanvas" role="img" aria-label="A night sky whose stars slowly gather into the ARKHÈ emblem"></canvas>
+    <div class="inner beats">
+      <div class="nb" data-in="-1,0" data-out="0.15,0.23">
+        <p class="label">Night · the Beyond</p>
+        <h2>Where the archetypes live</h2>
+        <p class="say small">Beneath the personal lies a deeper layer that all humans share. Its figures appear in every culture, every mythology, every night’s dreams. They have always shaped your life.</p>
+      </div>
+      <div class="nb" data-in="0.25,0.33" data-out="0.42,0.5">
+        <p class="say">The question is whether you will meet them consciously.</p>
+        <div class="archetypes" aria-label="Some of the figures of the collective unconscious">
+          <span>Mother</span><span>Father</span><span>King</span><span>Lover</span><span>Trickster</span><span>Warrior</span><span>Wise One</span><span>Magician</span><span>Child</span><span>Shadow</span>
+        </div>
+      </div>
+      <div class="nb" data-in="0.52,0.59" data-out="0.66,0.73">
+        <p class="say">What happens in the Beyond is not told in advance. That is part of its power. You cannot prepare your mind for it, and you do not need to.</p>
+      </div>
     </div>
-    <div class="archetypes" aria-label="Some of the figures of the collective unconscious">
-      <span>Mother</span><span>Father</span><span>King</span><span>Lover</span><span>Trickster</span><span>Warrior</span><span>Wise One</span><span>Magician</span><span>Child</span><span>Shadow</span>
-    </div>
-    <div class="prose">
-      <p>What happens in the Beyond is not told in advance. That is part of its power. You cannot prepare your mind for it, and you do not need to.</p>
-    </div>
-    <p class="met">We met each other in the Village, and got to know each other in the Beyond.</p>
+    <p class="met" id="met">We met each other in the Village, and got to know each other in the Beyond.</p>
   </div>
 </section>
 
@@ -608,38 +620,77 @@ body.gated #journey ~ section, body.gated #journey ~ footer { display: none; }
   input.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); release(); } });
   input.addEventListener('blur', () => { if (input.value.trim()) release(); });
 
-  /* ---- stars gathering into a circle ---- */
+  /* ---- night: the stars slowly gather into the ARKHÈ emblem ---- */
   const sc = document.getElementById('starCanvas'), sx = sc.getContext('2d');
-  const beyond = document.getElementById('beyond');
-  let stars = [];
-  function sizeStars() {
-    const r = sc.getBoundingClientRect(), d = devicePixelRatio || 1;
-    sc.width = r.width * d; sc.height = r.height * d; sx.setTransform(d, 0, 0, d, 0, 0);
-    const n = Math.round(r.width * r.height / 2200), cx = r.width * .72, cy = r.height * .55, R = Math.min(r.width, r.height) * .2;
-    stars = [];
-    for (let i = 0; i < n; i++) {
-      const gather = i % 9 === 0, ang = (i / n) * Math.PI * 2 * 9;
-      stars.push({ x: rnd(0, r.width), y: rnd(0, r.height), z: rnd(.3, 1.6), tw: rnd(0, 6.28), gather,
-        tx: cx + Math.cos(ang) * R * rnd(.96, 1.04), ty: cy + Math.sin(ang) * R * rnd(.96, 1.04) });
+  const beyond = document.getElementById('beyond'), nstage = document.getElementById('nightStage'), met = document.getElementById('met');
+  const nbs = [...document.querySelectorAll('.nb')].map(el => ({ el, i: el.dataset.in.split(',').map(Number), o: el.dataset.out.split(',').map(Number) }));
+  let stars = [], gs = [], SW = 0, SH = 0, LCX = 0, LCY = 0, nCur = 0;
+  function emblem(k) {            // points of the emblem in a unit circle (y down); d = when each star sets off
+    const P = [], TAU = Math.PI * 2, add = (x, y, d) => P.push({ x, y, d });
+    let n = Math.round(96 * k);
+    for (let i = 0; i < n; i++) { const a = i / n * TAU - Math.PI / 2; add(Math.cos(a), Math.sin(a), Math.abs(i / n - .5) * .3); }
+    n = Math.round(11 * k); for (let i = 1; i <= n; i++) add(0, -1 + i / (n + 1) * .458, .14 + i / n * .1);
+    n = Math.round(34 * k); for (let i = 0; i < n; i++) { const a = i / n * TAU - Math.PI / 2; add(Math.cos(a) * .275, -.267 + Math.sin(a) * .275, .22 + Math.abs(i / n - .5) * .2); }
+    n = Math.round(15 * k); for (let i = 1; i <= n; i++) add(0, .06 + i / n * .94, .3 + i / n * .15);
+    const L = .875, N = 16, rp = Math.round(21 * k), cp = k < .8 ? 4 : 6;
+    for (let i = 0; i <= N; i++) {
+      const th = Math.PI - i * Math.PI / N, out = Math.abs(th - Math.PI / 2) / (Math.PI / 2);
+      for (let j = 0; j < rp; j++) { const r = L * (.1 + (j + (i % 2) * .5) / rp * .74); P.push({ x: Math.cos(th) * r, y: .008 + Math.sin(th) * r, d: .38 + out * .4 + j / rp * .2, fine: 1 }); }
+      if (i < N) for (let j = 1; j <= cp; j++) {
+        const t = j / (cp + 1), a = th - t * Math.PI / N, r = L * (.84 + .16 * Math.pow(Math.sin(Math.PI * t), .6));
+        add(Math.cos(a) * r, .008 + Math.sin(a) * r, .55 + out * .45);
+      }
     }
+    return P;
+  }
+  function sizeStars() {
+    SW = nstage.offsetWidth; SH = nstage.offsetHeight; if (!SW || !SH) return;
+    const d = Math.min(devicePixelRatio || 1, 2);
+    sc.width = SW * d; sc.height = SH * d; sx.setTransform(d, 0, 0, d, 0, 0);
+    const R = Math.min(SW * .41, SH * .3); LCX = SW / 2; LCY = SH * .44;
+    stars = []; const n = Math.round(SW * SH / 2500);
+    for (let i = 0; i < n; i++) stars.push({ x: rnd(0, SW), y: rnd(0, SH), z: rnd(.3, 1.5), tw: rnd(0, 6.28) });
+    gs = emblem(R < 190 ? .72 : 1).map(p => ({ x: rnd(0, SW), y: rnd(0, SH), tx: LCX + p.x * R, ty: LCY + p.y * R, d: Math.min(1, p.d), z: p.fine ? rnd(.6, 1.05) : rnd(.9, 1.5), tw: rnd(0, 6.28), sw: rnd(.5, 1.5) }));
   }
   function drawStars(t) {
-    const r = sc.getBoundingClientRect();
-    sx.clearRect(0, 0, r.width, r.height);
-    const g = sx.createRadialGradient(r.width * .3, r.height * .2, 0, r.width * .3, r.height * .2, r.width * .9);
-    g.addColorStop(0, '#1d2050'); g.addColorStop(1, '#0f1128');
-    sx.fillStyle = g; sx.fillRect(0, 0, r.width, r.height);
-    const vh = innerHeight, b = beyond.getBoundingClientRect();
-    const p = Math.min(1, Math.max(0, (vh - b.top) / (b.height + vh * .2)));
-    const gp = reduce ? 1 : Math.min(1, Math.max(0, (p - .25) / .5));
-    for (const s of stars) {
-      const x = s.gather ? s.x + (s.tx - s.x) * gp : s.x, y = s.gather ? s.y + (s.ty - s.y) * gp : s.y;
-      const a = .35 + Math.abs(Math.sin(t / 1600 + s.tw)) * .65;
-      sx.globalAlpha = s.gather ? Math.min(1, a + gp * .3) : a * .8;
-      sx.fillStyle = s.gather ? '#f6e6c8' : '#e6e9fb';
-      sx.beginPath(); sx.arc(x, y, s.z * (s.gather ? 1.2 : 1), 0, 6.283); sx.fill();
+    const b = beyond.getBoundingClientRect(), vh = innerHeight;
+    if (SW && b.bottom > 0 && b.top < vh) {
+      const nT = Math.max(0, Math.min(1, -b.top / (b.height - SH)));
+      nCur += (nT - nCur) * (reduce ? 1 : .085);
+      const n = nCur, enter = sm(0, .9, (vh - b.top) / vh), g = sm(.6, .93, n);
+      sx.clearRect(0, 0, SW, SH);
+      const bg = sx.createRadialGradient(SW * .3, SH * .2, 0, SW * .3, SH * .2, Math.max(SW, SH) * .95);
+      bg.addColorStop(0, '#1d2050'); bg.addColorStop(1, '#0f1128');
+      sx.fillStyle = bg; sx.fillRect(0, 0, SW, SH);
+      const halo = sx.createRadialGradient(LCX, LCY, 0, LCX, LCY, Math.min(SW, SH) * .55);
+      halo.addColorStop(0, `rgba(74,122,229,${.16 * g})`); halo.addColorStop(1, 'rgba(74,122,229,0)');
+      sx.fillStyle = halo; sx.fillRect(0, 0, SW, SH);
+      const fade = (1 - sm(.02, .16, n)) * .95;      // the last of dusk still hangs at the top of the sky
+      if (fade > .01) { const tg = sx.createLinearGradient(0, 0, 0, SH * .5); tg.addColorStop(0, `rgba(23,25,62,${fade})`); tg.addColorStop(1, 'rgba(23,25,62,0)'); sx.fillStyle = tg; sx.fillRect(0, 0, SW, SH * .5); }
+      sx.fillStyle = '#e6e9fb';
+      for (const s of stars) {
+        const rise = Math.max(0, Math.min(1, enter * 1.6 - (1 - s.y / SH) * .6));
+        sx.globalAlpha = (.3 + Math.abs(Math.sin(t / 1600 + s.tw)) * .6) * rise * (1 - g * .45);
+        sx.beginPath(); sx.arc(s.x, s.y, s.z, 0, 6.283); sx.fill();
+      }
+      sx.fillStyle = '#f6e6c8';
+      for (const s of gs) {
+        let k = Math.max(0, Math.min(1, (g - s.d * .5) / .5)); k = k * k * (3 - 2 * k);
+        const a = (1 - k) * 1.15 * s.sw, ca = Math.cos(a), sa = Math.sin(a), dx = (s.x - LCX) * (1 - k), dy = (s.y - LCY) * (1 - k);
+        const x = LCX + dx * ca - dy * sa + (s.tx - LCX) * k, y = LCY + dx * sa + dy * ca + (s.ty - LCY) * k;
+        const rise = Math.max(0, Math.min(1, enter * 1.6 - (1 - s.y / SH) * .6));
+        sx.globalAlpha = Math.min(1, (.4 + Math.abs(Math.sin(t / 1500 + s.tw)) * .5) * (rise + k) + k * .25);
+        sx.beginPath(); sx.arc(x, y, s.z * (1 + k * .12), 0, 6.283); sx.fill();
+      }
+      sx.globalAlpha = 1;
+      for (const q of nbs) {
+        const a = sm(q.i[0], q.i[1], n), d = sm(q.o[0], q.o[1], n);
+        q.el.style.setProperty('--o', (a * (1 - d)).toFixed(3));
+        q.el.style.setProperty('--y', reduce ? '0px' : ((1 - a) * 46 - d * 46).toFixed(1) + 'px');
+        q.el.style.visibility = a * (1 - d) < .01 ? 'hidden' : 'visible';
+      }
+      met.style.opacity = sm(.88, .98, n).toFixed(3);
     }
-    sx.globalAlpha = 1;
     requestAnimationFrame(drawStars);
   }
   sizeStars(); requestAnimationFrame(drawStars);
