@@ -155,7 +155,7 @@ body.gated #journey ~ section, body.gated #journey ~ footer { display: none; }
 @media (max-width: 680px) { .pair { grid-template-columns: 1fr; gap: 30px; } }
 
 /* ---------- 4 · Night, the Beyond ---------- */
-#beyond { color: var(--bone); padding-block: 0; height: 580svh; overflow: visible; background: var(--indigo); }
+#beyond { color: var(--bone); padding-block: 0; height: 680svh; overflow: visible; background: var(--indigo); }
 .nb { position: absolute; left: max(20px, env(safe-area-inset-left, 0px)); right: max(20px, env(safe-area-inset-right, 0px)); top: 50%;
   opacity: var(--o, 0); transform: translate3d(0, calc(-50% + var(--y, 0px)), 0); will-change: opacity, transform; }
 .nb h2 { color: var(--bone); }
@@ -171,14 +171,34 @@ body.gated #journey ~ section, body.gated #journey ~ footer { display: none; }
 .met { font-family: var(--font-body); font-style: italic; font-weight: 300; font-size: clamp(24px, 3.4vw, 38px); line-height: 1.3; max-width: 20em; text-wrap: balance; margin: 70px 0 0; }
 
 /* ---------- 5 · Masks ---------- */
-#voices { color: var(--bone); padding-block: 110px 120px; background: #08080f; }
-#voices .wash { background: radial-gradient(40% 40% at 50% 40%, rgba(179,38,47,.13), transparent 75%), #08080f; }
-.masks { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 34px 26px; margin-top: 56px; }
-.mask { background: none; border: 0; color: inherit; cursor: pointer; padding: 0; text-align: center; font: inherit; }
-.mask svg { width: 100%; max-width: 170px; height: auto; display: block; margin: 0 auto 14px; transition: transform .6s ease, filter .6s; filter: drop-shadow(0 0 22px rgba(241,238,226,.08)); }
-.mask:hover svg, .mask[aria-pressed="true"] svg { transform: translateY(-4px); filter: drop-shadow(0 0 26px rgba(234,185,166,.35)); }
-.mask .cap { font-family: var(--font-ui); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; opacity: .6; }
-.mask[aria-pressed="true"] .cap { opacity: 1; color: var(--dawn); }
+#voices { color: var(--bone); height: 100svh; min-height: 560px; padding-block: 0; background: #050405; --fl: 1; touch-action: pan-y; }
+#fire { position: absolute; left: 50%; bottom: 0; width: min(1100px, 170%); height: 74%; transform: translateX(-50%); z-index: 0; filter: blur(5px) saturate(1.1); pointer-events: none; }
+.fireglow { position: absolute; inset: 0; z-index: 0; pointer-events: none; opacity: calc(.55 + var(--fl) * .45);
+  background: radial-gradient(64% 50% at 50% 96%, rgba(255,120,30,.3), rgba(190,50,12,.13) 45%, transparent 72%), radial-gradient(34% 40% at 50% 46%, rgba(255,140,60,.10), transparent 70%); }
+.vhead { position: absolute; z-index: 2; top: calc(clamp(34px, 7svh, 70px) + env(safe-area-inset-top, 0px)); left: 0; right: 0; text-align: center; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
+.vhead .label { color: #e2a070; margin-bottom: 10px; }
+.vhead h2 { font-size: clamp(22px, 2.6vw, 30px); margin: 0; color: rgba(241,238,226,.78); }
+.vslot { position: absolute; z-index: 2; left: 50%; top: 45%; width: clamp(190px, 38vmin, 350px); aspect-ratio: 160 / 190; transform: translate(-50%, -50%); }
+.vmask { position: absolute; inset: 0; background: none; border: 0; padding: 0; cursor: pointer; color: inherit;
+  filter: brightness(calc(.62 + var(--fl) * .5)) drop-shadow(0 26px 46px rgba(255,110,30,.22)); transition: transform 1.5s cubic-bezier(.2,.7,.2,1), opacity 1.3s ease; }
+.vmask .face { display: block; width: 100%; height: 100%; animation: vpulse var(--pd, 5s) ease-in-out infinite alternate; transform-origin: 50% 60%; }
+.vmask svg { display: block; width: 100%; height: 100%; overflow: visible; }
+@keyframes vpulse { from { transform: scale(1) rotate(calc(var(--pr, 0deg) * -1)); } to { transform: scale(calc(1 + var(--pa, .03))) rotate(var(--pr, 0deg)); } }
+.vmask.rise { animation: fromFire 2.1s cubic-bezier(.16,.8,.2,1) both; }
+@keyframes fromFire { 0% { transform: translate3d(0, 46svh, 0) scale(.3); opacity: 0; filter: brightness(3.4) saturate(1.6) blur(9px); } 45% { opacity: 1; filter: brightness(1.9) saturate(1.3) blur(2px); } 100% { transform: none; opacity: 1; } }
+.vmask.gone { opacity: 0; pointer-events: none; transform: translate3d(calc(var(--dir, 1) * -58vw), -3svh, 0) rotate(calc(var(--dir, 1) * -9deg)) scale(.8); }
+.vwords { position: absolute; inset: 0; z-index: 3; pointer-events: none; overflow: hidden; }
+.vwords span { position: absolute; left: 50%; top: calc(45% + clamp(190px, 38vmin, 350px) * .64); width: max-content; max-width: min(84vw, 22em); text-align: center; text-wrap: balance;
+  font-family: var(--font-body); font-style: italic; font-weight: 300; font-size: clamp(21px, 2.7vw, 32px); line-height: 1.25; color: #f4dcc0; text-shadow: 0 0 22px rgba(255,130,50,.55), 0 2px 12px #000;
+  transform: translate(-50%, 0); opacity: 0; animation: spoken 5.2s ease-in-out forwards; }
+@keyframes spoken { 0% { opacity: 0; transform: translate(-50%, calc(clamp(190px, 38vmin, 350px) * -.4)) scale(.4); filter: blur(6px); } 20% { opacity: 1; filter: blur(0); transform: translate(-50%, 0) scale(1); } 52% { opacity: 1; filter: blur(0); transform: translate(calc(-50% + var(--dx, 0px) * .15), 1.5svh) scale(1); } 100% { opacity: 0; transform: translate(calc(-50% + var(--dx, 0px)), 17svh) scale(.92); filter: blur(5px); color: #ff9a48; } }
+.vnav { position: absolute; z-index: 4; top: 45%; transform: translateY(-50%); width: 54px; height: 54px; border-radius: 50%; border: 1px solid rgba(226,160,112,.35); background: rgba(5,4,5,.4); color: #e2a070; font: 300 30px/1 var(--font-ui); cursor: pointer; transition: border-color .4s, color .4s, background .4s; }
+.vnav:hover, .vnav:focus-visible { border-color: #e2a070; color: var(--bone); background: rgba(60,22,8,.5); }
+.vnav.prev { left: max(14px, env(safe-area-inset-left, 0px)); } .vnav.next { right: max(14px, env(safe-area-inset-right, 0px)); }
+.vfoot { position: absolute; z-index: 3; left: 0; right: 0; bottom: 0; text-align: center; padding: 60px max(20px, env(safe-area-inset-right, 0px)) calc(18px + env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left, 0px)); text-shadow: 0 1px 10px #000, 0 0 4px #000; }
+.vcount { font-family: var(--font-ui); font-size: 11px; letter-spacing: .24em; text-transform: uppercase; margin: 14px 0 0; color: rgba(226,160,112,.75); }
+#voices .voice-note { margin: 0 auto; font-size: 11px; opacity: .5; max-width: 44em; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 .voice-note { margin-top: 42px; font-family: var(--font-ui); font-size: 13px; letter-spacing: .04em; opacity: .62; max-width: 46em; }
 
 /* ---------- 6 · Dawn, the vessel ---------- */
@@ -296,18 +316,18 @@ body.gated #journey ~ section, body.gated #journey ~ footer { display: none; }
   <div class="stage" id="nightStage">
     <canvas id="starCanvas" role="img" aria-label="A night sky whose stars slowly gather into the ARKHÈ emblem"></canvas>
     <div class="inner beats">
-      <div class="nb" data-in="-1,0" data-out="0.15,0.23">
+      <div class="nb" data-in="-1,0" data-out="0.12,0.19">
         <p class="label">Night · the Beyond</p>
         <h2>Where the archetypes live</h2>
         <p class="say small">Beneath the personal lies a deeper layer that all humans share. Its figures appear in every culture, every mythology, every night’s dreams. They have always shaped your life.</p>
       </div>
-      <div class="nb" data-in="0.25,0.33" data-out="0.42,0.5">
+      <div class="nb" data-in="0.21,0.28" data-out="0.35,0.42">
         <p class="say">The question is whether you will meet them consciously.</p>
         <div class="archetypes" aria-label="Some of the figures of the collective unconscious">
           <span>Mother</span><span>Father</span><span>King</span><span>Lover</span><span>Trickster</span><span>Warrior</span><span>Wise One</span><span>Magician</span><span>Child</span><span>Shadow</span>
         </div>
       </div>
-      <div class="nb" data-in="0.52,0.59" data-out="0.66,0.73">
+      <div class="nb" data-in="0.44,0.5" data-out="0.55,0.61">
         <p class="say">What happens in the Beyond is not told in advance. That is part of its power. You cannot prepare your mind for it, and you do not need to.</p>
       </div>
     </div>
@@ -316,15 +336,22 @@ body.gated #journey ~ section, body.gated #journey ~ footer { display: none; }
 </section>
 
 <!-- 5 · Voices -->
-<section class="band" id="voices">
-  <div class="wash"></div>
-  <div class="inner">
-    <p class="label" style="color:var(--dawn)">Voices from the circle</p>
+<section class="band" id="voices" aria-roledescription="carousel" aria-label="Voices from the circle">
+  <canvas id="fire" aria-hidden="true"></canvas>
+  <div class="fireglow" aria-hidden="true"></div>
+  <div class="vhead">
+    <p class="label">Voices from the circle</p>
     <h2>Strangers became soul family</h2>
-    <div class="prose"><p>Mask after mask. Behind each one, someone who crossed the threshold. Touch a mask to listen.</p></div>
-    <div class="masks" id="masks"></div>
-    <p class="voice-note" id="voiceNote" aria-live="polite">Recordings to come. Each voice will be shared only with the person’s consent, and only about how it felt, never about what happened.</p>
+    <p class="vcount" id="vCount"></p>
   </div>
+  <div class="vslot" id="vslot"></div>
+  <div class="vwords" id="vwords" aria-hidden="true"></div>
+  <button class="vnav prev" id="vPrev" type="button" aria-label="Previous voice">‹</button>
+  <button class="vnav next" id="vNext" type="button" aria-label="Next voice">›</button>
+  <div class="vfoot">
+    <p class="voice-note">Placeholder words. Real voices will be recorded and shared only with each person’s consent, and only about how it felt, never about what happened.</p>
+  </div>
+  <p class="sr" id="vLive" aria-live="polite"></p>
 </section>
 
 <!-- 6 · Dawn, the vessel -->
@@ -523,39 +550,113 @@ body.gated #journey ~ section, body.gated #journey ~ footer { display: none; }
       `<path d="M252,48 Q300,70 252,98" fill="none" stroke="#b3262f" stroke-width="1.6"/>`;
   })();
 
-  /* ---- masks ---- */
-  const maskData = [
-    { k: 'round', label: 'Voice I' }, { k: 'split', label: 'Voice II' }, { k: 'angular', label: 'Voice III' },
-    { k: 'tall', label: 'Voice IV' }, { k: 'moon', label: 'Voice V' }, { k: 'leaf', label: 'Voice VI' }
+  /* ---- voices: masks rise out of the fire, speak, and leave into the dark ---- */
+  const voiceData = [   // audio: put a file path here (e.g. 'assets/voice-1.mp3') once a real recording exists; tap the mask to hear it
+    { k: 'round',   name: 'Voice I',   pd: 5.2, pa: .034, pr: '0deg',   audio: '', words: ['I arrived a stranger.', 'I was listened to.', 'I felt held.'] },
+    { k: 'split',   name: 'Voice II',  pd: 3.6, pa: .02,  pr: '1.2deg', audio: '', words: ['Light and dark.', 'Both were welcome here.', 'I stopped choosing between them.'] },
+    { k: 'angular', name: 'Voice III', pd: 6.8, pa: .05,  pr: '0deg',   audio: '', words: ['Radical honesty.', 'Nobody looked away.', 'Neither did I.'] },
+    { k: 'tall',    name: 'Voice IV',  pd: 4.4, pa: .026, pr: '-1.6deg', audio: '', words: ['I left something in the Village.', 'I have not missed it.'] },
+    { k: 'moon',    name: 'Voice V',   pd: 7.6, pa: .042, pr: '2deg',   audio: '', words: ['I cannot explain it.', 'I can still feel it.'] },
+    { k: 'leaf',    name: 'Voice VI',  pd: 4.9, pa: .03,  pr: '0.8deg', audio: '', words: ['Not more perfect.', 'More whole.', 'Soul family.'] }
   ];
-  function maskSvg(k) {
-    const stroke = '#f1eee2';
-    let shape;
-    if (k === 'round') shape = `<ellipse cx="80" cy="95" rx="58" ry="74" fill="#16161f" stroke="${stroke}" stroke-width="1.4"/>`;
-    else if (k === 'split') shape = `<path d="M80,20 C30,20 22,90 30,120 C40,160 70,172 80,172 Z" fill="#f1eee2"/><path d="M80,20 C130,20 138,90 130,120 C120,160 90,172 80,172 Z" fill="#16161f" stroke="${stroke}" stroke-width="1.4"/>`;
-    else if (k === 'angular') shape = `<path d="M80,18 L138,58 L128,140 L80,174 L32,140 L22,58 Z" fill="#16161f" stroke="${stroke}" stroke-width="1.4"/>`;
-    else if (k === 'tall') shape = `<path d="M80,10 C122,30 128,120 112,160 C102,178 58,178 48,160 C32,120 38,30 80,10 Z" fill="#16161f" stroke="${stroke}" stroke-width="1.4"/>`;
-    else if (k === 'moon') shape = `<path d="M110,24 A74,74 0 1 0 110,168 A58,62 0 1 1 110,24 Z" fill="#16161f" stroke="${stroke}" stroke-width="1.4"/>`;
-    else shape = `<path d="M80,14 C140,50 140,140 80,178 C20,140 20,50 80,14 Z" fill="#16161f" stroke="${stroke}" stroke-width="1.4"/><path d="M80,20 L80,172" stroke="${stroke}" stroke-opacity=".35"/>`;
-    const eyeFill = k === 'split' ? '#08080f' : '#08080f';
-    const eyes = `<ellipse cx="58" cy="82" rx="11" ry="6" fill="${eyeFill}" stroke="${stroke}" stroke-opacity=".7"/><ellipse cx="102" cy="82" rx="11" ry="6" fill="${eyeFill}" stroke="${stroke}" stroke-opacity=".7"/>`;
-    const mouth = `<ellipse class="mouth" cx="80" cy="136" rx="13" ry="3" fill="#b3262f"/>`;
-    return `<svg viewBox="0 0 160 190" aria-hidden="true">${shape}${eyes}${mouth}</svg>`;
+  let maskN = 0;
+  function fireMask(k) {
+    const id = 'm' + (maskN++), lit = `url(#${id}l)`, rim = `url(#${id}r)`;
+    const shapes = {
+      round: `<ellipse cx="80" cy="95" rx="58" ry="74" fill="${lit}" stroke="${rim}" stroke-width="1.6"/>`,
+      split: `<path d="M80,20 C30,20 22,90 30,120 C40,160 70,172 80,172 Z" fill="${lit}" stroke="${rim}" stroke-width="1.6"/><path d="M80,20 C130,20 138,90 130,120 C120,160 90,172 80,172 Z" fill="${lit}" stroke="${rim}" stroke-width="1.6" opacity=".42"/>`,
+      angular: `<path d="M80,18 L138,58 L128,140 L80,174 L32,140 L22,58 Z" fill="${lit}" stroke="${rim}" stroke-width="1.6"/><path d="M80,18 L80,60 M22,58 L58,74 M138,58 L102,74" stroke="#000" stroke-opacity=".5" fill="none"/>`,
+      tall: `<path d="M80,10 C122,30 128,120 112,160 C102,178 58,178 48,160 C32,120 38,30 80,10 Z" fill="${lit}" stroke="${rim}" stroke-width="1.6"/><path d="M62,40 Q80,30 98,40 M58,54 Q80,44 102,54" stroke="#000" stroke-opacity=".45" fill="none"/>`,
+      moon: `<path d="M110,24 A74,74 0 1 0 110,168 A58,62 0 1 1 110,24 Z" fill="${lit}" stroke="${rim}" stroke-width="1.6"/>`,
+      leaf: `<path d="M80,14 C140,50 140,140 80,178 C20,140 20,50 80,14 Z" fill="${lit}" stroke="${rim}" stroke-width="1.6"/><path d="M80,22 L80,116 M80,50 L52,66 M80,50 L108,66" stroke="#000" stroke-opacity=".4" fill="none"/>`
+    };
+    const moon = k === 'moon', ex = moon ? [52, 84] : [58, 102], mxm = moon ? 62 : 80;
+    return `<svg viewBox="0 0 160 190" aria-hidden="true"><defs>
+      <radialGradient id="${id}l" gradientUnits="userSpaceOnUse" cx="80" cy="236" r="230"><stop offset="0" stop-color="#ffb35c"/><stop offset=".3" stop-color="#c8581c"/><stop offset=".62" stop-color="#4e1a0c"/><stop offset="1" stop-color="#0d0606"/></radialGradient>
+      <linearGradient id="${id}r" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ffd08a"/><stop offset=".55" stop-color="#a2401a" stop-opacity=".5"/><stop offset="1" stop-color="#2a0e08" stop-opacity=".2"/></linearGradient>
+      <filter id="${id}g" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".03 .11" numOctaves="3" seed="${3 + maskN * 7}"/><feColorMatrix values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1.5 -.42"/><feComposite in2="SourceGraphic" operator="in" result="grain"/><feBlend in="grain" in2="SourceGraphic" mode="multiply"/></filter></defs>
+      <g filter="url(#${id}g)">${shapes[k]}
+      <path d="M${mxm - 5},92 Q${mxm},${k === 'tall' ? 122 : 114} ${mxm + 5},92" fill="none" stroke="#000" stroke-opacity=".45" stroke-width="1.4"/></g>
+      ${ex.map(x => `<ellipse cx="${x}" cy="82" rx="${moon ? 8 : 11}" ry="${k === 'angular' ? 4 : 6}" fill="#030202"/><ellipse cx="${x}" cy="83.5" rx="${moon ? 8 : 11}" ry="${k === 'angular' ? 4 : 6}" fill="none" stroke="#ffb35c" stroke-opacity=".35" stroke-width=".8"/>`).join('')}
+      <ellipse class="mouth" cx="${mxm}" cy="136" rx="13" ry="2.5" fill="#030202" stroke="#ff9a48" stroke-opacity=".55" stroke-width=".9"/></svg>`;
   }
-  const maskWrap = document.getElementById('masks'), note = document.getElementById('voiceNote');
-  maskData.forEach(m => {
+  const voicesEl = document.getElementById('voices'), vslot = document.getElementById('vslot'), vwords = document.getElementById('vwords');
+  const vCount = document.getElementById('vCount'), vLive = document.getElementById('vLive');
+  let vi = 0, vCur = null, vMouth = null, speakUntil = 0, wordTimer = 0, wordIdx = 0, vAudio = null, vSeen = false;
+  function speak() {
+    const v = voiceData[vi]; if (!v.words.length) return;
+    const el = document.createElement('span');
+    el.textContent = v.words[wordIdx % v.words.length]; wordIdx++;
+    el.style.setProperty('--dx', rnd(-70, 70).toFixed(0) + 'px');
+    vwords.appendChild(el); setTimeout(() => el.remove(), 5400);
+    speakUntil = performance.now() + 1500 + el.textContent.length * 28;
+  }
+  function showVoice(n, dir) {
+    vi = (n + voiceData.length) % voiceData.length;
+    const v = voiceData[vi];
+    clearInterval(wordTimer); if (vAudio) { vAudio.pause(); vAudio = null; }
+    vwords.querySelectorAll('span').forEach(x => { x.style.transition = 'opacity .5s'; x.style.opacity = 0; setTimeout(() => x.remove(), 520); });
+    if (vCur) { const old = vCur; old.classList.remove('rise'); old.style.setProperty('--dir', dir); old.inert = true; requestAnimationFrame(() => old.classList.add('gone')); setTimeout(() => old.remove(), 1600); }
     const b = document.createElement('button');
-    b.className = 'mask'; b.type = 'button'; b.setAttribute('aria-pressed', 'false');
-    b.innerHTML = maskSvg(m.k) + `<span class="cap">${m.label}</span>`;
+    b.type = 'button'; b.className = 'vmask' + (reduce ? '' : ' rise'); b.setAttribute('aria-label', v.name + (v.audio ? ': play recording' : ': speak again'));
+    b.style.setProperty('--pd', v.pd + 's'); b.style.setProperty('--pa', v.pa); b.style.setProperty('--pr', v.pr);
+    b.innerHTML = `<span class="face">${fireMask(v.k)}</span>`;
     b.addEventListener('click', () => {
-      maskWrap.querySelectorAll('.mask').forEach(x => { x.setAttribute('aria-pressed', 'false'); x.querySelector('.mouth').setAttribute('ry', 3); });
-      b.setAttribute('aria-pressed', 'true');
-      const mouth = b.querySelector('.mouth');
-      let t = 0; const iv = setInterval(() => { mouth.setAttribute('ry', (3 + Math.abs(Math.sin(t)) * 7).toFixed(1)); t += .5; if (t > 14) { clearInterval(iv); mouth.setAttribute('ry', 3); } }, 90);
-      note.textContent = `${m.label}: recording to come. Each voice will be shared only with the person’s consent, and only about how it felt, never about what happened.`;
+      if (v.audio) { if (vAudio) vAudio.pause(); vAudio = new Audio(v.audio); vAudio.play().catch(() => {}); }
+      else speak();
     });
-    maskWrap.appendChild(b);
-  });
+    vslot.appendChild(b); vCur = b; vMouth = b.querySelector('.mouth');
+    vCount.textContent = `${v.name} · ${vi + 1} / ${voiceData.length}`;
+    vLive.textContent = `${v.name}: ${v.words.join(' ')}`;
+    wordIdx = 0;
+    setTimeout(() => { if (vCur === b) { speak(); wordTimer = setInterval(speak, 4300); } }, reduce ? 300 : 1900);
+  }
+  document.getElementById('vPrev').addEventListener('click', () => showVoice(vi - 1, -1));
+  document.getElementById('vNext').addEventListener('click', () => showVoice(vi + 1, 1));
+  voicesEl.addEventListener('keydown', e => { if (e.key === 'ArrowLeft') showVoice(vi - 1, -1); if (e.key === 'ArrowRight') showVoice(vi + 1, 1); });
+  let tsx = 0, tsy = 0, wheelLock = 0;
+  voicesEl.addEventListener('touchstart', e => { tsx = e.touches[0].clientX; tsy = e.touches[0].clientY; }, { passive: true });
+  voicesEl.addEventListener('touchend', e => { const dx = e.changedTouches[0].clientX - tsx, dy = e.changedTouches[0].clientY - tsy; if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy) * 1.4) showVoice(vi + (dx < 0 ? 1 : -1), dx < 0 ? 1 : -1); }, { passive: true });
+  voicesEl.addEventListener('wheel', e => {
+    if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+    e.preventDefault(); const now = performance.now();
+    if (Math.abs(e.deltaX) > 24 && now > wheelLock) { wheelLock = now + 1100; showVoice(vi + (e.deltaX > 0 ? 1 : -1), e.deltaX > 0 ? 1 : -1); }
+  }, { passive: false });
+
+  /* the fire: the only light in this place */
+  const fc = document.getElementById('fire'), fx = fc.getContext('2d');
+  let FW = 0, FH = 0, flames = [], embers = [], fl = 1;
+  function sizeFire() { FW = fc.offsetWidth; FH = fc.offsetHeight; if (!FW) return; fc.width = FW / 2; fc.height = FH / 2; fx.setTransform(.5, 0, 0, .5, 0, 0); }
+  function drawFire(t) {
+    const r = voicesEl.getBoundingClientRect();
+    if (FW && r.bottom > 0 && r.top < innerHeight) {
+      if (!vSeen && r.top < innerHeight * .55) { vSeen = true; showVoice(0, 1); }
+      fl += ((.72 + Math.sin(t / 130) * .1 + Math.sin(t / 47) * .07 + Math.random() * .16) - fl) * .2;
+      voicesEl.style.setProperty('--fl', fl.toFixed(3));
+      if (vMouth) vMouth.setAttribute('ry', (performance.now() < speakUntil || (vAudio && !vAudio.paused) ? 3 + Math.abs(Math.sin(t / 95)) * 6.5 * (.5 + Math.random() * .5) : 2.5).toFixed(1));
+      const n = reduce ? 0 : 7;
+      for (let i = 0; i < n; i++) { const off = (Math.random() + Math.random() + Math.random() - 1.5) / 1.5; flames.push({ x: FW / 2 + off * Math.min(FW * .2, 210), y: FH * .84 + Math.abs(off) * 14, vx: rnd(-.5, .5), vy: rnd(-4.6, -1.8) * (1 - Math.abs(off) * .55), r: rnd(20, 50) * (1 - Math.abs(off) * .35), life: 1, d: rnd(.011, .026), w: rnd(0, 6.28) }); }
+      if (!reduce && Math.random() < .5) embers.push({ x: FW / 2 + rnd(-.14, .14) * FW, y: FH * .8, vx: rnd(-.5, .5), vy: rnd(-2.6, -1), life: 1, d: rnd(.004, .009), w: rnd(0, 6.28) });
+      fx.globalCompositeOperation = 'source-over'; fx.clearRect(0, 0, FW, FH);
+      fx.globalCompositeOperation = 'lighter';
+      if (reduce) { const g = fx.createRadialGradient(FW / 2, FH, 0, FW / 2, FH, FH * .6); g.addColorStop(0, 'rgba(255,170,70,.9)'); g.addColorStop(.4, 'rgba(220,70,20,.5)'); g.addColorStop(1, 'rgba(120,20,0,0)'); fx.fillStyle = g; fx.fillRect(0, 0, FW, FH); }
+      for (let i = flames.length - 1; i >= 0; i--) {
+        const p = flames[i]; p.x += p.vx + Math.sin(t / 170 + p.y * .035 + p.w) * 1.5; p.y += p.vy; p.vx += (FW / 2 - p.x) * .0022; p.life -= p.d;
+        if (p.life <= 0) { flames.splice(i, 1); continue; }
+        const L = p.life, rr = p.r * (.3 + L * .7), g = fx.createRadialGradient(p.x, p.y, 0, p.x, p.y, rr);
+        const c = L > .72 ? [255, 222, 150] : L > .45 ? [255, 138, 40] : L > .2 ? [205, 52, 14] : [90, 18, 8];
+        g.addColorStop(0, `rgba(${c[0]},${c[1]},${c[2]},${.085 * Math.min(1, L * 1.8)})`); g.addColorStop(1, `rgba(${c[0]},${c[1]},${c[2]},0)`);
+        fx.fillStyle = g; fx.beginPath(); fx.arc(p.x, p.y, rr, 0, 6.283); fx.fill();
+      }
+      for (let i = embers.length - 1; i >= 0; i--) {
+        const p = embers[i]; p.x += p.vx + Math.sin(t / 300 + p.w) * .7; p.y += p.vy; p.life -= p.d;
+        if (p.life <= 0 || p.y < 0) { embers.splice(i, 1); continue; }
+        fx.fillStyle = `rgba(255,${Math.round(150 + p.life * 70)},80,${p.life})`; fx.beginPath(); fx.arc(p.x, p.y, 2.2, 0, 6.283); fx.fill();
+      }
+    }
+    requestAnimationFrame(drawFire);
+  }
+  sizeFire(); requestAnimationFrame(drawFire);
 
   /* ---- the veil of real leaves opens with each breath ---- */
   const veil = document.getElementById('veil');
@@ -567,7 +668,7 @@ body.gated #journey ~ section, body.gated #journey ~ footer { display: none; }
     veil.style.opacity = (1 - Math.max(0, eff - .7) * 2.2).toFixed(3);
     requestAnimationFrame(openVeil);
   })();
-  addEventListener('resize', () => { sizeRays(); sizeStars(); });
+  addEventListener('resize', () => { sizeRays(); sizeStars(); sizeFire(); });
 
   /* ---- breathing ---- */
   const breath = document.getElementById('breath'), begin = document.getElementById('beginBreath');
@@ -604,7 +705,7 @@ body.gated #journey ~ section, body.gated #journey ~ footer { display: none; }
   function cross(e) {
     e.preventDefault();
     document.body.classList.remove('gated');
-    sizeStars(); readScroll();
+    sizeStars(); sizeFire(); readScroll();
     const from = scrollY, to = journey.offsetTop + village.offsetHeight * 8, dur = reduce ? 0 : 6500, t0 = performance.now(), id = ++crossing;
     const stop = () => { crossing++; };
     ['wheel', 'touchstart', 'keydown'].forEach(ev => addEventListener(ev, stop, { once: true, passive: true }));
@@ -650,14 +751,14 @@ body.gated #journey ~ section, body.gated #journey ~ footer { display: none; }
     const R = Math.min(SW * .41, SH * .3); LCX = SW / 2; LCY = SH * .44;
     stars = []; const n = Math.round(SW * SH / 2500);
     for (let i = 0; i < n; i++) stars.push({ x: rnd(0, SW), y: rnd(0, SH), z: rnd(.3, 1.5), tw: rnd(0, 6.28) });
-    gs = emblem(R < 190 ? .72 : 1).map(p => ({ x: rnd(0, SW), y: rnd(0, SH), tx: LCX + p.x * R, ty: LCY + p.y * R, d: Math.min(1, p.d), z: p.fine ? rnd(.6, 1.05) : rnd(.9, 1.5), tw: rnd(0, 6.28), sw: rnd(.5, 1.5) }));
+    gs = emblem(R < 190 ? .72 : 1).map(p => ({ fd: Math.random(), fx: rnd(-1, 1), x: rnd(0, SW), y: rnd(0, SH), tx: LCX + p.x * R, ty: LCY + p.y * R, d: Math.min(1, p.d), z: p.fine ? rnd(.6, 1.05) : rnd(.9, 1.5), tw: rnd(0, 6.28), sw: rnd(.5, 1.5) }));
   }
   function drawStars(t) {
     const b = beyond.getBoundingClientRect(), vh = innerHeight;
     if (SW && b.bottom > 0 && b.top < vh) {
       const nT = Math.max(0, Math.min(1, -b.top / (b.height - SH)));
       nCur += (nT - nCur) * (reduce ? 1 : .085);
-      const n = nCur, enter = sm(0, .9, (vh - b.top) / vh), g = sm(.6, .93, n);
+      const n = nCur, enter = sm(0, .9, (vh - b.top) / vh), g = sm(.52, .8, n), f = sm(.88, 1, n);
       sx.clearRect(0, 0, SW, SH);
       const bg = sx.createRadialGradient(SW * .3, SH * .2, 0, SW * .3, SH * .2, Math.max(SW, SH) * .95);
       bg.addColorStop(0, '#1d2050'); bg.addColorStop(1, '#0f1128');
@@ -670,14 +771,17 @@ body.gated #journey ~ section, body.gated #journey ~ footer { display: none; }
       sx.fillStyle = '#e6e9fb';
       for (const s of stars) {
         const rise = Math.max(0, Math.min(1, enter * 1.6 - (1 - s.y / SH) * .6));
-        sx.globalAlpha = (.3 + Math.abs(Math.sin(t / 1600 + s.tw)) * .6) * rise * (1 - g * .45);
+        sx.globalAlpha = (.3 + Math.abs(Math.sin(t / 1600 + s.tw)) * .6) * rise * (1 - g * .45) * (1 - f);
         sx.beginPath(); sx.arc(s.x, s.y, s.z, 0, 6.283); sx.fill();
       }
-      sx.fillStyle = '#f6e6c8';
+      sx.globalAlpha = 1;
+      if (f > 0) { sx.fillStyle = `rgba(5,4,5,${f})`; sx.fillRect(0, 0, SW, SH); }     // the sky goes out
+      sx.fillStyle = f > 0 ? `rgb(${Math.round(246 + 9 * f)},${Math.round(230 - 92 * f)},${Math.round(200 - 142 * f)})` : '#f6e6c8';
       for (const s of gs) {
         let k = Math.max(0, Math.min(1, (g - s.d * .5) / .5)); k = k * k * (3 - 2 * k);
         const a = (1 - k) * 1.15 * s.sw, ca = Math.cos(a), sa = Math.sin(a), dx = (s.x - LCX) * (1 - k), dy = (s.y - LCY) * (1 - k);
-        const x = LCX + dx * ca - dy * sa + (s.tx - LCX) * k, y = LCY + dx * sa + dy * ca + (s.ty - LCY) * k;
+        const ff = Math.max(0, Math.min(1, (f - s.fd * .45) / .55));      // one by one the stars let go and fall, glowing, toward the fire
+        const x = LCX + dx * ca - dy * sa + (s.tx - LCX) * k + Math.sin(ff * 5 + s.tw) * 26 * ff + s.fx * 60 * ff * ff - (s.tx - LCX) * .35 * ff * ff, y = LCY + dx * sa + dy * ca + (s.ty - LCY) * k + ff * ff * (SH * 1.15 - (s.ty - LCY));
         const rise = Math.max(0, Math.min(1, enter * 1.6 - (1 - s.y / SH) * .6));
         sx.globalAlpha = Math.min(1, (.4 + Math.abs(Math.sin(t / 1500 + s.tw)) * .5) * (rise + k) + k * .25);
         sx.beginPath(); sx.arc(x, y, s.z * (1 + k * .12), 0, 6.283); sx.fill();
@@ -689,7 +793,7 @@ body.gated #journey ~ section, body.gated #journey ~ footer { display: none; }
         q.el.style.setProperty('--y', reduce ? '0px' : ((1 - a) * 46 - d * 46).toFixed(1) + 'px');
         q.el.style.visibility = a * (1 - d) < .01 ? 'hidden' : 'visible';
       }
-      met.style.opacity = sm(.88, .98, n).toFixed(3);
+      met.style.opacity = (sm(.76, .84, n) * (1 - sm(.86, .9, n))).toFixed(3);
     }
     requestAnimationFrame(drawStars);
   }
