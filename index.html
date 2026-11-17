@@ -1,3 +1,7 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ARKHÈ</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -26,7 +30,7 @@
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body { background: var(--indigo); color: var(--ink); font-family: var(--font-body); font-size: 18px; line-height: 1.65; overflow-x: hidden; }
+body { margin: 0; background: var(--indigo); color: var(--ink); font-family: var(--font-body); font-size: 18px; line-height: 1.65; overflow-x: hidden; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation: none !important; transition: none !important; } }
 
 /* grain over everything: nothing here is meant to look finished */
@@ -76,7 +80,7 @@ svg.hand { display: block; overflow: visible; }
 .facts b { font-weight: 500; }
 
 /* ---------- the walk toward the tree (scroll-driven) ---------- */
-#journey { height: 600svh; position: relative; background: #1b2414; }
+#journey { height: 900svh; position: relative; background: #1b2414; }
 .stage { position: sticky; top: 0; height: 100svh; overflow: hidden; }
 .stage > #village, .stage > #threshold { position: absolute; inset: 0; min-height: 0; padding-block: 0; }
 #village { display: block; }
@@ -94,6 +98,19 @@ svg.hand { display: block; overflow: visible; }
 .hint i { display: block; width: 1px; height: 34px; margin: 10px auto 0; background: linear-gradient(rgba(241,238,226,.9), transparent); animation: drip 2.6s ease-in-out infinite; transform-origin: top; }
 @keyframes drip { 0% { transform: scaleY(0); opacity: 0; } 40% { transform: scaleY(1); opacity: 1; } 100% { transform: scaleY(1); opacity: 0; } }
 #threshold { z-index: 3; will-change: opacity, transform; }
+
+/* the threshold holds: nothing lies beyond it until you cross */
+body.gated #journey { height: 600svh; }
+body.gated #journey ~ section, body.gated #journey ~ footer { display: none; }
+/* nightfall: dusk comes down over the leaves from the top of the sky */
+#duskSky { position: absolute; inset: -3%; z-index: 4; background: #211c33 url("assets/dusk.jpg") 30% 40% / cover no-repeat; --d: 0; visibility: hidden; will-change: transform;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 calc(var(--d) * 1% - 38%), transparent calc(var(--d) * 1%));
+  mask-image: linear-gradient(to bottom, #000 0, #000 calc(var(--d) * 1% - 38%), transparent calc(var(--d) * 1%)); }
+#duskSky::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 62%, #211c33 97%), linear-gradient(90deg, rgba(20,16,34,.45), transparent 60%); }
+.duskTitle { position: absolute; z-index: 5; left: 0; right: 0; bottom: 0; max-width: 1080px; margin: 0 auto; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); padding-block: 0 clamp(60px, 12svh, 120px);
+  color: var(--bone); opacity: 0; visibility: hidden; }
+.duskTitle .label { color: #e6c9b4; }
+.duskTitle h2 { color: var(--bone); margin: 0; text-shadow: 0 2px 30px rgba(15,12,30,.8); }
 
 /* ---------- 2 · Threshold ---------- */
 #threshold { color: var(--bone); min-height: 680px; padding-block: 90px; display: flex; align-items: center; }
@@ -127,7 +144,8 @@ svg.hand { display: block; overflow: visible; }
 .skip { display: inline-block; margin-top: 22px; font-family: var(--font-ui); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; opacity: .75; }
 
 /* ---------- 3 · Dusk ---------- */
-#dusk { color: var(--bone); padding-block: 120px 130px; }
+#dusk { color: var(--bone); padding-block: 40px 130px; background: #211c33; }
+#dusk::before { content: ""; position: absolute; z-index: 1; inset: 0 0 auto 0; height: 420px; background: linear-gradient(180deg, #211c33, rgba(33,28,51,0)); pointer-events: none; }
 #dusk .wash { background: radial-gradient(70% 60% at 15% 10%, #6b77a6, transparent 70%), radial-gradient(60% 60% at 90% 40%, #8a5a62, transparent 70%), radial-gradient(90% 70% at 50% 110%, #24264a, transparent 75%), #4a4e78; }
 .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-top: 56px; }
 .pair > div { min-width: 0; }
@@ -228,12 +246,17 @@ svg.hand { display: block; overflow: visible; }
       </div>
       <div class="crossed" id="crossed">
         <p><em>Let it go. You may enter.</em></p>
-        <a class="btn" href="#dusk" style="text-decoration:none;display:inline-block">Cross</a>
+        <a class="btn" href="#dusk" id="crossBtn" style="text-decoration:none;display:inline-block">Cross</a>
       </div>
       <a class="skip" href="#dusk" id="skip">Continue without pausing</a>
     </div>
   </div>
 </section>
+<div id="duskSky" role="img" aria-label="The same valley at dusk: violet sky, an ember horizon, the tree in silhouette"></div>
+<div class="duskTitle" id="duskTitle">
+  <p class="label">Dusk</p>
+  <h2>We do not seek perfection.<br>We seek wholeness.</h2>
+</div>
 </div>
 </div>
 
@@ -241,8 +264,6 @@ svg.hand { display: block; overflow: visible; }
 <section class="band" id="dusk">
   <div class="wash" data-wash="dusk"></div>
   <div class="inner">
-    <p class="label" style="color:#d9dcf3">Dusk</p>
-    <h2>We do not seek perfection.<br>We seek wholeness.</h2>
     <div class="prose">
       <p>Perfection is reached only by cutting parts of ourselves away. Wholeness includes them: the light and the dark, the noble and the not-so-noble, the masculine and the feminine that move in all of us.</p>
       <p>Here the noise grows quieter. The emotional body wakes up. What cannot be explained can be felt.</p>
@@ -412,12 +433,29 @@ svg.hand { display: block; overflow: visible; }
   const sunEl = document.getElementById('sun'), scrimEl = document.getElementById('scrim'), hint = document.getElementById('hint');
   const beatEls = [...document.querySelectorAll('.beat')].map(el => ({ el, i: el.dataset.in.split(',').map(Number), o: el.dataset.out.split(',').map(Number) }));
   const sm = (a, b, x) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
-  let target = 0, last = -1;
-  function readScroll() { const r = journey.getBoundingClientRect(); target = Math.max(0, Math.min(1, -r.top / (r.height - innerHeight))); }
+  let target = 0, last = -1, curQ = 0;
+  const duskSky = document.getElementById('duskSky'), duskTitle = document.getElementById('duskTitle');
+  let targetQ = 0, lastQ = -1;
+  function readScroll() {
+    const top = -journey.getBoundingClientRect().top, h = village.offsetHeight;
+    target = Math.max(0, Math.min(1, top / (h * 5)));
+    targetQ = Math.max(0, Math.min(1, (top - h * 5) / (h * 3)));
+  }
   function walk(t) {
     cur += (target - cur) * (reduce ? 1 : .085);
     if (Math.abs(target - cur) < .0004) cur = target;
     const idle = reduce ? 0 : Math.sin(t / 9000) * .012;
+    curQ += (targetQ - curQ) * (reduce ? 1 : .085);
+    if (Math.abs(targetQ - curQ) < .0004) curQ = targetQ;
+    if (curQ !== lastQ) {
+      const q = curQ, fall = sm(.12, .8, q);
+      duskSky.style.visibility = duskTitle.style.visibility = q < .005 ? 'hidden' : 'visible';
+      duskSky.style.setProperty('--d', (fall * 140).toFixed(2));
+      duskSky.style.transform = reduce ? '' : `translate3d(0, ${((1 - fall) * -2.4).toFixed(3)}%, 0) scale(${(1.05 - fall * .05).toFixed(4)})`;
+      duskTitle.style.opacity = sm(.74, .96, q).toFixed(3);
+      duskTitle.style.transform = reduce ? '' : `translate3d(0, ${((1 - sm(.74, .96, q)) * 30).toFixed(1)}px, 0)`;
+      last = -1; lastQ = curQ;
+    }
     if (cur !== last || idle) {
       const p = cur, z = reduce ? 1.04 : 1.04 + idle + Math.pow(sm(.04, .9, p), 1.5) * 3.1;
       valleyPhoto.style.transform = `scale(${z.toFixed(4)})`;
@@ -436,8 +474,8 @@ svg.hand { display: block; overflow: visible; }
       threshold.style.opacity = th.toFixed(3);
       threshold.style.visibility = th < .005 ? 'hidden' : 'visible';
       threshold.style.transform = reduce ? '' : `scale(${(1.5 - sm(.72, .95, p) * .5).toFixed(4)})`;
-      threshBox.style.opacity = sm(.9, .985, p).toFixed(3);
-      threshold.inert = p < .93;
+      threshBox.style.opacity = (sm(.9, .985, p) * (1 - sm(0, .22, curQ))).toFixed(3);
+      threshold.inert = p < .93 || curQ > .15;
       last = cur;
     }
     requestAnimationFrame(walk);
@@ -512,8 +550,9 @@ svg.hand { display: block; overflow: visible; }
   let part = 0, partTarget = 0;
   (function openVeil() {
     part += (partTarget - part) * 0.018;
-    veil.style.setProperty('--open', (part * 95).toFixed(2));
-    veil.style.opacity = (1 - Math.max(0, part - .7) * 2.2).toFixed(3);
+    const eff = Math.max(part, typeof curQ === 'number' ? Math.min(1, curQ / .45) : 0);
+    veil.style.setProperty('--open', (eff * 95).toFixed(2));
+    veil.style.opacity = (1 - Math.max(0, eff - .7) * 2.2).toFixed(3);
     requestAnimationFrame(openVeil);
   })();
   addEventListener('resize', () => { sizeRays(); sizeStars(); });
@@ -547,6 +586,25 @@ svg.hand { display: block; overflow: visible; }
     partTarget = 1;
     setTimeout(() => { crossed.classList.add('on'); document.getElementById('skip').hidden = true; }, 2600);
   }
+  /* ---- crossing: the page beyond the threshold only exists once you choose to go ---- */
+  document.body.classList.add('gated');
+  let crossing = 0;
+  function cross(e) {
+    e.preventDefault();
+    document.body.classList.remove('gated');
+    sizeStars(); readScroll();
+    const from = scrollY, to = journey.offsetTop + village.offsetHeight * 8, dur = reduce ? 0 : 6500, t0 = performance.now(), id = ++crossing;
+    const stop = () => { crossing++; };
+    ['wheel', 'touchstart', 'keydown'].forEach(ev => addEventListener(ev, stop, { once: true, passive: true }));
+    (function step(now) {
+      if (id !== crossing) return;
+      const k = dur ? Math.min(1, (now - t0) / dur) : 1, ease = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+      scrollTo({ top: from + (to - from) * ease, behavior: 'instant' });
+      if (k < 1) requestAnimationFrame(step);
+    })(t0);
+  }
+  document.getElementById('crossBtn').addEventListener('click', cross);
+  document.getElementById('skip').addEventListener('click', cross);
   input.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); release(); } });
   input.addEventListener('blur', () => { if (input.value.trim()) release(); });
 
