@@ -75,6 +75,26 @@ svg.hand { display: block; overflow: visible; }
 .facts span { display: flex; gap: 8px; align-items: baseline; }
 .facts b { font-weight: 500; }
 
+/* ---------- the walk toward the tree (scroll-driven) ---------- */
+#journey { height: 600svh; position: relative; background: #1b2414; }
+.stage { position: sticky; top: 0; height: 100svh; overflow: hidden; }
+.stage > #village, .stage > #threshold { position: absolute; inset: 0; min-height: 0; padding-block: 0; }
+#village { display: block; }
+#village .photo { animation: none; transform-origin: 17% 31%; }
+.beats { height: 100%; width: 100%; }
+.beat { position: absolute; left: max(20px, env(safe-area-inset-left, 0px)); right: max(20px, env(safe-area-inset-right, 0px)); top: 50%;
+  opacity: var(--o, 0); transform: translate3d(0, calc(-50% + var(--y, 0px)), 0); will-change: opacity, transform; }
+.beat .mark { margin-top: 18px; }
+.beat + .beat::before { content: ""; position: absolute; z-index: -1; inset: -70px -60px; background: radial-gradient(closest-side, rgba(10,14,8,.58), rgba(10,14,8,.3) 60%, transparent); pointer-events: none; }
+.say { font-family: var(--font-body); font-weight: 300; font-size: clamp(23px, 2.9vw, 38px); line-height: 1.38; max-width: 23em; margin: 0; text-wrap: pretty; text-shadow: 0 2px 26px rgba(0,0,0,.75), 0 0 2px rgba(0,0,0,.4); }
+.beat .facts { margin: 0; font-size: clamp(20px, 2.6vw, 34px); gap: 8px 44px; font-family: var(--font-display); letter-spacing: .08em; text-shadow: 0 2px 24px rgba(0,0,0,.7); }
+.beat .facts b { color: var(--leaf); font-weight: 400; }
+.place { font-family: var(--font-ui); font-size: 13px; letter-spacing: .22em; text-transform: uppercase; margin: 22px 0 0; color: rgba(241,238,226,.85); text-shadow: 0 1px 14px rgba(0,0,0,.8); }
+.hint { position: absolute; z-index: 3; left: 0; right: 0; bottom: calc(26px + env(safe-area-inset-bottom, 0px)); margin: 0; text-align: center; font-family: var(--font-ui); font-size: 11px; letter-spacing: .26em; text-transform: uppercase; color: rgba(241,238,226,.85); text-shadow: 0 1px 12px rgba(0,0,0,.8); }
+.hint i { display: block; width: 1px; height: 34px; margin: 10px auto 0; background: linear-gradient(rgba(241,238,226,.9), transparent); animation: drip 2.6s ease-in-out infinite; transform-origin: top; }
+@keyframes drip { 0% { transform: scaleY(0); opacity: 0; } 40% { transform: scaleY(1); opacity: 1; } 100% { transform: scaleY(1); opacity: 0; } }
+#threshold { z-index: 3; will-change: opacity, transform; }
+
 /* ---------- 2 · Threshold ---------- */
 #threshold { color: var(--bone); min-height: 680px; padding-block: 90px; display: flex; align-items: center; }
 #threshold { background: #2b3350; }
@@ -160,26 +180,34 @@ svg.hand { display: block; overflow: visible; }
 <div class="grain" aria-hidden="true"></div>
 
 <!-- 1 · Village -->
+<div id="journey">
+<div class="stage" id="stage">
 <section class="band" id="village">
   <div class="photo" id="valleyPhoto" role="img" aria-label="The valley below Hidden Paradise in the Alpujarra, with ridges fading toward the sea"></div>
-  <div class="sun" aria-hidden="true"></div>
+  <div class="sun" id="sun" aria-hidden="true"></div>
   <canvas id="rays" aria-hidden="true"></canvas>
   <canvas id="motes" aria-hidden="true"></canvas>
-  <div class="scrim" aria-hidden="true"></div>
+  <div class="scrim" id="scrim" aria-hidden="true"></div>
   <span class="proto">Prototype v2 · for Raffaello</span>
-  <div class="inner" style="width:100%">
-    <p class="label">An embodied transpersonal journey</p>
-    <h1 class="mark">ARKH<span>È</span></h1>
-    <p class="etym"><b>ἀρχή · arkhē</b> &nbsp;origin, beginning &nbsp;·&nbsp; <b>τύπος · typos</b> &nbsp;imprint, pattern</p>
-    <p class="whisper">There is a whisper that tells us there is more to life than this.</p>
-    <div class="prose">
-      <p>It is the voice of the collective unconscious: the ancient patterns that shape our dreams, our stories and our choices, long before personality, biography or opinion.</p>
-      <p>ARKHÈ is a ritual immersion into the world of these patterns, the archetypes. Not to study them from a distance, but to meet them through the body, in ceremony, embodiment and myth.</p>
+  <div class="inner beats">
+    <div class="beat" data-in="-1,0" data-out="0.12,0.2">
+      <p class="label">An embodied transpersonal journey</p>
+      <h1 class="mark">ARKH<span>È</span></h1>
+      <p class="etym"><b>ἀρχή · arkhē</b> &nbsp;origin, beginning &nbsp;·&nbsp; <b>τύπος · typos</b> &nbsp;imprint, pattern</p>
+      <p class="whisper">There is a whisper that tells us there is more to life than this.</p>
     </div>
-    <div class="facts">
-      <span><b>6</b> days</span><span><b>5</b> nights</span><span><b>1</b> circle</span><span>Alpujarra, Sierra Nevada</span>
+    <div class="beat" data-in="0.22,0.3" data-out="0.38,0.45">
+      <p class="say">It is the voice of the collective unconscious: the ancient patterns that shape our dreams, our stories and our choices, long before personality, biography or opinion.</p>
+    </div>
+    <div class="beat" data-in="0.46,0.54" data-out="0.61,0.68">
+      <p class="say">ARKHÈ is a ritual immersion into the world of these patterns, the archetypes. Not to study them from a distance, but to meet them through the body, in ceremony, embodiment and myth.</p>
+    </div>
+    <div class="beat" data-in="0.69,0.75" data-out="0.8,0.86">
+      <div class="facts"><span><b>6</b> days</span><span><b>5</b> nights</span><span><b>1</b> circle</span></div>
+      <p class="place">Alpujarra, Sierra Nevada</p>
     </div>
   </div>
+  <p class="hint" id="hint" aria-hidden="true">Scroll, slowly<i></i></p>
 </section>
 
 <!-- 2 · Threshold -->
@@ -187,7 +215,7 @@ svg.hand { display: block; overflow: visible; }
   <div class="far" aria-hidden="true"></div>
   <div id="veil" role="img" aria-label="Mulberry leaves at Hidden Paradise, with the valley behind them"></div>
   <div class="inner" style="width:100%">
-    <div class="thresh-box">
+    <div class="thresh-box" id="threshBox">
       <p class="label" style="color:var(--bone)">The threshold</p>
       <h2 id="thTitle">Before you go further, pause.</h2>
       <p>Every journey into the Beyond begins by leaving something behind. Take three slow breaths here.</p>
@@ -206,6 +234,8 @@ svg.hand { display: block; overflow: visible; }
     </div>
   </div>
 </section>
+</div>
+</div>
 
 <!-- 3 · Dusk -->
 <section class="band" id="dusk">
@@ -334,7 +364,8 @@ svg.hand { display: block; overflow: visible; }
   /* ---- sunbeams and dust in the valley ---- */
   const rc = document.getElementById('rays'), rx = rc.getContext('2d');
   const mc = document.getElementById('motes'), mx = mc.getContext('2d');
-  const village = document.getElementById('village'), valleyPhoto = document.getElementById('valleyPhoto');
+  const village = document.getElementById('stage'), valleyPhoto = document.getElementById('valleyPhoto');
+  let cur = 0;
   let beams = [], motes = [], RW = 0, RH = 0, sunX = 0, sunY = 0, px = 0, py = 0;
   function sizeRays() {
     const r = village.getBoundingClientRect(), d = Math.min(devicePixelRatio || 1, 2);
@@ -349,8 +380,7 @@ svg.hand { display: block; overflow: visible; }
     for (let i = 0; i < n; i++) motes.push({ x: rnd(0, RW), y: rnd(0, RH), r: rnd(.5, 1.9), vx: rnd(-.06, .1), vy: rnd(-.09, .04), ph: rnd(0, 6.28) });
   }
   function drawRays(t) {
-    const b = village.getBoundingClientRect();
-    if (b.bottom > 0) {
+    if (cur < .7 && journey.getBoundingClientRect().bottom > 0) {
       const L = Math.hypot(RW, RH);
       rx.clearRect(0, 0, RW, RH);
       for (const B of beams) {
@@ -376,7 +406,44 @@ svg.hand { display: block; overflow: visible; }
   }
   sizeRays(); requestAnimationFrame(drawRays);
   village.addEventListener('pointermove', e => { const r = village.getBoundingClientRect(); px = (e.clientX - r.left) / r.width - .5; py = (e.clientY - r.top) / r.height - .5; });
-  if (!reduce) addEventListener('scroll', () => { const y = Math.min(scrollY, innerHeight); valleyPhoto.style.translate = `0 ${y * .18}px`; }, { passive: true });
+
+  /* ---- the walk: scroll moves us toward the tree, whose leaves become the threshold ---- */
+  const journey = document.getElementById('journey'), threshold = document.getElementById('threshold'), threshBox = document.getElementById('threshBox');
+  const sunEl = document.getElementById('sun'), scrimEl = document.getElementById('scrim'), hint = document.getElementById('hint');
+  const beatEls = [...document.querySelectorAll('.beat')].map(el => ({ el, i: el.dataset.in.split(',').map(Number), o: el.dataset.out.split(',').map(Number) }));
+  const sm = (a, b, x) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+  let target = 0, last = -1;
+  function readScroll() { const r = journey.getBoundingClientRect(); target = Math.max(0, Math.min(1, -r.top / (r.height - innerHeight))); }
+  function walk(t) {
+    cur += (target - cur) * (reduce ? 1 : .085);
+    if (Math.abs(target - cur) < .0004) cur = target;
+    const idle = reduce ? 0 : Math.sin(t / 9000) * .012;
+    if (cur !== last || idle) {
+      const p = cur, z = reduce ? 1.04 : 1.04 + idle + Math.pow(sm(.04, .9, p), 1.5) * 3.1;
+      valleyPhoto.style.transform = `scale(${z.toFixed(4)})`;
+      const light = 1 - sm(.3, .66, p);
+      sunEl.style.opacity = rc.style.opacity = mc.style.opacity = light.toFixed(3);
+      sunEl.style.translate = `${(p * 26).toFixed(2)}vw ${(-p * 10).toFixed(2)}vh`;
+      scrimEl.style.opacity = (1 - sm(.82, .95, p) * .7).toFixed(3);
+      hint.style.opacity = (1 - sm(.01, .06, p)).toFixed(3);
+      for (const b of beatEls) {
+        const a = sm(b.i[0], b.i[1], p), d = sm(b.o[0], b.o[1], p);
+        b.el.style.setProperty('--o', (a * (1 - d)).toFixed(3));
+        b.el.style.setProperty('--y', reduce ? '0px' : ((1 - a) * 46 - d * 46).toFixed(1) + 'px');
+        b.el.style.visibility = a * (1 - d) < .01 ? 'hidden' : 'visible';
+      }
+      const th = sm(.72, .9, p);
+      threshold.style.opacity = th.toFixed(3);
+      threshold.style.visibility = th < .005 ? 'hidden' : 'visible';
+      threshold.style.transform = reduce ? '' : `scale(${(1.5 - sm(.72, .95, p) * .5).toFixed(4)})`;
+      threshBox.style.opacity = sm(.9, .985, p).toFixed(3);
+      threshold.inert = p < .93;
+      last = cur;
+    }
+    requestAnimationFrame(walk);
+  }
+  addEventListener('scroll', readScroll, { passive: true }); addEventListener('resize', readScroll);
+  readScroll(); cur = target; requestAnimationFrame(walk);
 
   /* ---- dusk: flowing vs. structured line ---- */
   function drawMotion() {
